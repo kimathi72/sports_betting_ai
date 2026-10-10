@@ -1,0 +1,76 @@
+name: sports-betting-ai
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sports_betting_ai_development}
+      POSTGRES_USER: ${POSTGRES_USER:-sports_ai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_only}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5434}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  ml:
+    build:
+      context: ./ml
+    ports:
+      - "127.0.0.1:${ML_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  # Temporary bootstrap definitions.
+  # Replace these with the real application containers before enabling this profile.
+  web:
+    image: ruby:3.3-slim
+    profiles: ["application"]
+    command: ["ruby", "-e", "sleep"]
+    working_dir: /app
+
+  sidekiq:
+    image: ruby:3.3-slim
+    profiles: ["application"]
+    command: ["ruby", "-e", "sleep"]
+    working_dir: /app
+
+  mobile:
+    image: node:22-alpine
+    profiles: ["application"]
+    command: ["node", "-e", "setInterval(() => {}, 1000)"]
+    working_dir: /app
+
+volumes:
+  postgres_data:
+  redis_data:
