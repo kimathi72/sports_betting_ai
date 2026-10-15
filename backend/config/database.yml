@@ -1,0 +1,44 @@
+# PostgreSQL. Versions 9.3 and up are supported.
+#
+# Install the pg driver:
+#   gem install pg
+# On macOS with Homebrew:
+#   gem install pg -- --with-pg-config=/usr/local/bin/pg_config
+# On Windows:
+#   gem install pg
+#       Choose the win32 build.
+#       Install PostgreSQL and put its /bin directory on your path.
+#
+# Configure Using Gemfile
+# gem "pg"
+#
+# PostgreSQL configuration for the Sports Betting AI backend.
+#
+# Container-to-container connections must use the Compose service name
+# (`postgres`), never `localhost`. Host-side tooling reaches the database
+# through the mapped host port (5434 by default) to avoid the local
+# PostgreSQL instance that occupies 5432.
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DATABASE_HOST", "postgres") %>
+  port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
+  username: <%= ENV.fetch("POSTGRES_USER", "sports_ai") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "local_dev_only") %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("POSTGRES_DB", "sports_betting_ai_development") %>
+
+# Warning: The database defined as "test" is erased and regenerated when the
+# suite runs. Keep it separate from development and production.
+test:
+  <<: *default
+  database: <%= ENV.fetch("POSTGRES_TEST_DB", "sports_betting_ai_test") %>
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("POSTGRES_DB", "sports_betting_ai_production") %>
+  username: <%= ENV.fetch("POSTGRES_USER", "sports_ai") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "local_dev_only") %>

@@ -51,19 +51,70 @@ services:
       start_period: 15s
     restart: unless-stopped
 
-  # Temporary bootstrap definitions.
-  # Replace these with the real application containers before enabling this profile.
+  # Rails API container. Builds from backend/Dockerfile; runs puma.
+  # The entrypoint waits for postgres and runs `db:prepare` before booting.
   web:
-    image: ruby:3.3-slim
+    build:
+      context: ./backend
     profiles: ["application"]
-    command: ["ruby", "-e", "sleep"]
-    working_dir: /app
+    environment:
+      RAILS_ENV: development
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-sports_betting_ai_development}
+      POSTGRES_USER: ${POSTGRES_USER:-sports_ai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_only}
+      REDIS_URL: redis://redis:6379/0
+      RUN_MIGRATIONS: "true"
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
+    volumes:
+      - ./backend:/app
+      # Import fixtures live at the repository root so they are shared between
+      # the backend and the future data pipeline. Mounted read-only: the app
+      # reads fixtures but must never write back into the source tree.
+      - ./data:/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS http://127.0.0.1:3000/up || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
 
+  # Sidekiq worker. Shares the web image; must not run migrations so web and
+  # sidekiq never race each other against the schema.
   sidekiq:
-    image: ruby:3.3-slim
+    build:
+      context: ./backend
     profiles: ["application"]
-    command: ["ruby", "-e", "sleep"]
-    working_dir: /app
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+    environment:
+      RAILS_ENV: development
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-sports_betting_ai_development}
+      POSTGRES_USER: ${POSTGRES_USER:-sports_ai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_only}
+      REDIS_URL: redis://redis:6379/0
+      RUN_MIGRATIONS: "false"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
+    restart: unless-stopped
 
   mobile:
     image: node:22-alpine

@@ -1,0 +1,21 @@
+# Rails backend artifacts
+/.bundle
+/vendor/bundle
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/storage/*
+!/storage/.keep
+/public/assets
+/config/master.key
+
+# Credentials and environment secrets
+.env
+.env.*
+
+# Coverage reports
+/coverage/
+
+# OS noise
+.DS_Store
