@@ -16,16 +16,16 @@ module Import
     # Where imports may come from. `/data` is the Compose mount; the Rails-root
     # relative entries cover running the suite and local development.
     DEFAULT_ROOTS = [
-      '/data',
-      Rails.root.join('..', 'data').to_s,
-      Rails.root.join('data').to_s,
+      "/data",
+      Rails.root.join("..", "data").to_s,
+      Rails.root.join("data").to_s,
     ].freeze
 
     class NotPermitted < StandardError; end
 
     def self.allowed_roots
-      extra = ENV.fetch('IMPORT_ALLOWED_ROOTS', '').split(File::PATH_SEPARATOR)
-                   .reject { |root| root.strip.empty? }
+      extra = ENV.fetch("IMPORT_ALLOWED_ROOTS", "").split(File::PATH_SEPARATOR)
+        .reject { |root| root.strip.empty? }
       (DEFAULT_ROOTS + extra).map { |root| realdir(root) }.compact.uniq
     end
 
@@ -48,15 +48,15 @@ module Import
     # Returns the resolved absolute path when permitted, or raises NotPermitted
     # with an operator-readable reason. Messages never echo directory listings.
     def validate!
-      raise NotPermitted, 'a file path is required' if path.strip.empty?
+      raise NotPermitted, "a file path is required" if path.strip.empty?
       raise NotPermitted, "the file path must be absolute (got #{path.inspect})" unless File.absolute_path?(path)
       raise NotPermitted, "file not found: #{File.basename(path)}" unless File.file?(path)
 
       resolved = begin
-        File.realpath(path)
-      rescue SystemCallError
-        raise NotPermitted, "file not found: #{File.basename(path)}"
-      end
+          File.realpath(path)
+        rescue SystemCallError
+          raise NotPermitted, "file not found: #{File.basename(path)}"
+        end
 
       unless permitted?(resolved)
         raise NotPermitted,
