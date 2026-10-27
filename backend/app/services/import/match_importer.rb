@@ -32,6 +32,10 @@ module Import
       end
     end
 
+    # The one status that carries a final result. Matches the value in the
+    # matches table check constraint / Match::STATUSES.
+    COMPLETED = 'completed'.freeze
+
     # A batch abort caused by a specific source row. Carrying the zero-based
     # index lets the failure be reported against the row an operator can find.
     class RowAbort < Abort
@@ -180,21 +184,21 @@ module Import
     def reconcile(existing, row)
       return :created if existing.nil?
 
-      if existing.status == Match::STATUS_COMPLETED && row.status == Match::STATUS_COMPLETED
+      if existing.status == COMPLETED && row.status == COMPLETED
         return :skipped if same_result?(existing, row)
 
         raise Abort, "completed result conflict: stored #{score_of(existing)} but the " \
                      "imported row says #{row.home_score}-#{row.away_score}"
       end
 
-      if existing.status == Match::STATUS_COMPLETED
+      if existing.status == COMPLETED
         # A completed match arriving as scheduled/postponed is a provider
         # regression. Keep the result and reject the row.
         raise Abort, "imported row would downgrade a completed match (#{score_of(existing)}) " \
                      'to ' + row.status.to_s
       end
 
-      if row.status == Match::STATUS_COMPLETED
+      if row.status == COMPLETED
         promote(existing, row)
         return :updated
       end
@@ -213,7 +217,7 @@ module Import
     def promote(existing, row)
       existing.home_score = row.home_score
       existing.away_score = row.away_score
-      existing.status = Match::STATUS_COMPLETED
+      existing.status = COMPLETED
       existing.kickoff_at = row.kickoff_at if row.kickoff_at
       existing.save!
     end

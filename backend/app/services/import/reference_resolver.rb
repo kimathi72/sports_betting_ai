@@ -77,21 +77,59 @@ module Import
         # A migration or hand-seeded competition already owns this identity.
         # Attach the provider mapping to it rather than creating a second row
         # that the name uniqueness would not allow anyway.
-        persist_identifier(:competition, key, existing)
+        begin
+          persist_identifier(:competition, key, existing)
+        rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+          return recover_from_competition_race(key, e)
+        end
+
         return Resolution.success(existing, created: false)
       end
 
-      record = Competition.create!(name: canonical_competition_name(key))
-      persist_identifier(:competition, key, record)
+      # The mapping insert and the canonical insert each have their own unique
+      # index. A concurrent writer may win either one, so both are recoverable:
+      # the winner is re-read and reused instead of reporting a spurious failure.
+      # The model also validates name uniqueness, so a race can surface as a
+      # RecordInvalid("already been taken") instead of RecordNotUnique.
+      record = begin
+        Competition.create!(name: canonical_competition_name(key))
+      rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+        return recover_from_competition_race(key, e)
+      end
+
+      begin
+        persist_identifier(:competition, key, record)
+      rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+        return recover_from_competition_race(key, e)
+      end
+
       Resolution.success(record, created: true)
-    rescue ActiveRecord::RecordNotUnique
+    rescue ActiveRecord::StatementInvalid
+      Resolution.failure('competition could not be stored because of a database error')
+    end
+
+    # A uniqueness failure on either the name or the mapping means another writer
+    # got there first. Only those are recovered; any other validation failure is a
+    # real error and is reported rather than hidden behind a retry.
+    def recover_from_competition_race(key, error)
+      unless uniqueness_failure?(error)
+        return Resolution.failure(
+          "competition could not be stored: #{error.record.errors.full_messages.to_sentence}"
+        )
+      end
+
       recover_from_race(:competition, key) do
         Competition.find_by(name: canonical_competition_name(key))
       end
-    rescue ActiveRecord::RecordInvalid => e
-      Resolution.failure("competition could not be stored: #{e.record.errors.full_messages.to_sentence}")
-    rescue ActiveRecord::StatementInvalid
-      Resolution.failure('competition could not be stored because of a database error')
+    end
+
+    # True when a RecordInvalid was caused by a uniqueness validator, which is the
+    # application-level twin of a unique-index violation.
+    def uniqueness_failure?(error)
+      return true if error.is_a?(ActiveRecord::RecordNotUnique)
+      return false unless error.is_a?(ActiveRecord::RecordInvalid)
+
+      error.record.errors.details.values.flatten.any? { |detail| detail[:error] == :taken }
     end
 
     # Resolves the operator's season label within a competition.
@@ -153,19 +191,42 @@ module Import
           return Resolution.failure(team_collision_message(existing, display))
         end
 
-        persist_identifier(:team, key, existing)
+        begin
+          persist_identifier(:team, key, existing)
+        rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+          return recover_from_team_race(key, display, e)
+        end
+
         return Resolution.success(existing, created: false)
       end
 
-      record = Team.create!(name: display)
-      persist_identifier(:team, key, record)
+      # As with competitions, either unique index may be won by a concurrent
+      # writer: the canonical normalized_name or the provider mapping.
+      record = begin
+        Team.create!(name: display)
+      rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+        return recover_from_team_race(key, display, e)
+      end
+
+      begin
+        persist_identifier(:team, key, record)
+      rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+        return recover_from_team_race(key, display, e)
+      end
+
       Resolution.success(record, created: true)
-    rescue ActiveRecord::RecordNotUnique
-      recover_from_race(:team, key) { find_canonical_team(display) }
-    rescue ActiveRecord::RecordInvalid => e
-      Resolution.failure("team could not be stored: #{e.record.errors.full_messages.to_sentence}")
     rescue ActiveRecord::StatementInvalid
       Resolution.failure('team could not be stored because of a database error')
+    end
+
+    def recover_from_team_race(key, display, error)
+      unless uniqueness_failure?(error)
+        return Resolution.failure(
+          "team could not be stored: #{error.record.errors.full_messages.to_sentence}"
+        )
+      end
+
+      recover_from_race(:team, key) { find_canonical_team(display) }
     end
 
     # Resolves the fixture. The natural key (computed by the provider adapter)
