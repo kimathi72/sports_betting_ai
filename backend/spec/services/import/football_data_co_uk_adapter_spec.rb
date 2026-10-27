@@ -38,10 +38,12 @@ RSpec.describe Import::FootballDataCoUkAdapter do
       expect(row.kickoff_at).to eq(Time.utc(2024, 8, 17, 15, 0))
     end
 
+    # The key is the match identity, so it is rendered from parsed values and
+    # normalised names rather than echoing raw file text. See 'natural match key'.
     it 'exposes a stable provider key for the fixture' do
       row = described_class.parse_row(rows.first)
 
-      expect(row.provider_key).to eq('E0|16/08/2024|12:30|Manchester United|Fulham')
+      expect(row.provider_key).to eq('E0|2024-08-16|12:30|manchester united|fulham')
     end
 
     it 'maps FTR to the completed status and keeps both scores' do
@@ -129,6 +131,275 @@ RSpec.describe Import::FootballDataCoUkAdapter do
       expect(results.map(&:success?)).to eq([true, false])
       expect(results[1].error).to match(/date/i)
       expect(results[1].index).to eq(1)
+    end
+  end
+
+  # The full-time-result policy, stated explicitly. FTR is the provider's
+  # outcome code; it decides whether a row asserts a finished result, a
+  # postponed fixture or a fixture that has not been played yet. Getting this
+  # wrong silently corrupts results, so every branch is pinned here.
+  describe 'FTR data-integrity policy' do
+    let(:valid_row) do
+      {
+        'Div' => 'E0', 'Date' => '16/08/2024', 'Time' => '12:30',
+        'HomeTeam' => 'Manchester United', 'AwayTeam' => 'Fulham',
+        'FTHG' => '1', 'FTAG' => '0', 'FTR' => 'H'
+      }
+    end
+
+    %w[H D A].each do |code|
+      it "maps FTR=#{code} with valid scores to a completed match" do
+        result = described_class.parse(valid_row.merge('FTR' => code))
+
+        expect(result).to be_success
+        expect(result.row.status).to eq('completed')
+        expect(result.row.home_score).to eq(1)
+        expect(result.row.away_score).to eq(0)
+      end
+    end
+
+    it 'maps FTR=P to postponed with no result, not completed' do
+      result = described_class.parse(valid_row.merge('FTR' => 'P', 'FTHG' => '', 'FTAG' => ''))
+
+      expect(result).to be_success
+      expect(result.row.status).to eq('postponed')
+      expect(result.row.home_score).to be_nil
+      expect(result.row.away_score).to be_nil
+    end
+
+    it 'rejects FTR=P when scores are also present' do
+      result = described_class.parse(valid_row.merge('FTR' => 'P'))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/postponed/i)
+    end
+
+    it 'maps a blank FTR with blank scores to scheduled' do
+      result = described_class.parse(valid_row.merge('FTR' => '', 'FTHG' => '', 'FTAG' => ''))
+
+      expect(result).to be_success
+      expect(result.row.status).to eq('scheduled')
+      expect(result.row.home_score).to be_nil
+      expect(result.row.away_score).to be_nil
+    end
+
+    it 'rejects a blank FTR that carries scores, never discarding them' do
+      result = described_class.parse(valid_row.merge('FTR' => ''))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/FTR|full-time/i)
+    end
+
+    it 'rejects a blank FTR that carries only one score' do
+      result = described_class.parse(valid_row.merge('FTR' => '', 'FTAG' => ''))
+
+      expect(result).not_to be_success
+    end
+
+    it 'rejects a completed code with missing scores' do
+      result = described_class.parse(valid_row.merge('FTHG' => '', 'FTAG' => ''))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/score/i)
+    end
+
+    it 'rejects an unknown FTR value' do
+      result = described_class.parse(valid_row.merge('FTR' => 'X'))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/FTR|unknown/i)
+    end
+
+    it 'rejects a lowercase FTR rather than silently accepting it' do
+      result = described_class.parse(valid_row.merge('FTR' => 'h'))
+
+      expect(result).not_to be_success
+    end
+  end
+
+  describe 'required identity fields' do
+    let(:valid_row) do
+      {
+        'Div' => 'E0', 'Date' => '16/08/2024', 'Time' => '12:30',
+        'HomeTeam' => 'Manchester United', 'AwayTeam' => 'Fulham',
+        'FTHG' => '1', 'FTAG' => '0', 'FTR' => 'H'
+      }
+    end
+
+    it 'rejects a blank competition code' do
+      result = described_class.parse(valid_row.merge('Div' => '  '))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/competition|Div/i)
+    end
+
+    it 'rejects a blank home team name' do
+      expect(described_class.parse(valid_row.merge('HomeTeam' => ' '))).not_to be_success
+    end
+
+    it 'rejects a blank away team name' do
+      expect(described_class.parse(valid_row.merge('AwayTeam' => ''))).not_to be_success
+    end
+
+    it 'rejects a missing kickoff time instead of inventing midnight' do
+      result = described_class.parse(valid_row.merge('Time' => ''))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/time/i)
+    end
+
+    it 'rejects a malformed kickoff time' do
+      expect(described_class.parse(valid_row.merge('Time' => '3pm'))).not_to be_success
+    end
+
+    it 'rejects an out-of-range kickoff time' do
+      expect(described_class.parse(valid_row.merge('Time' => '25:70'))).not_to be_success
+    end
+  end
+
+  # Date.strptime('%d/%m/%Y') happily parses '16/08/24' as the year 24 AD.
+  # A two-digit year is ambiguous, so it is rejected rather than imported as 0024.
+  describe 'date parsing' do
+    let(:valid_row) do
+      {
+        'Div' => 'E0', 'Date' => '16/08/2024', 'Time' => '12:30',
+        'HomeTeam' => 'Manchester United', 'AwayTeam' => 'Fulham',
+        'FTHG' => '1', 'FTAG' => '0', 'FTR' => 'H'
+      }
+    end
+
+    it 'rejects a two-digit year instead of reading it as year 0024' do
+      result = described_class.parse(valid_row.merge('Date' => '16/08/24'))
+
+      expect(result).not_to be_success
+      expect(result.error).to match(/date|year/i)
+    end
+
+    it 'rejects an impossible calendar date' do
+      expect(described_class.parse(valid_row.merge('Date' => '31/02/2024'))).not_to be_success
+    end
+
+    it 'rejects a blank date' do
+      expect(described_class.parse(valid_row.merge('Date' => ''))).not_to be_success
+    end
+
+    it 'accepts a valid four-digit-year date' do
+      result = described_class.parse(valid_row.merge('Date' => '01/01/2025'))
+
+      expect(result).to be_success
+      expect(result.row.kickoff_at).to eq(Time.utc(2025, 1, 1, 12, 30))
+    end
+  end
+
+  # The provider publishes no match id, so the natural key IS the match
+  # identity. Identity must not change because of cosmetic whitespace or case.
+  describe 'natural match key' do
+    let(:valid_row) do
+      {
+        'Div' => 'E0', 'Date' => '16/08/2024', 'Time' => '12:30',
+        'HomeTeam' => 'Manchester United', 'AwayTeam' => 'Fulham',
+        'FTHG' => '1', 'FTAG' => '0', 'FTR' => 'H'
+      }
+    end
+
+    it 'is unaffected by surrounding or repeated whitespace in team names' do
+      tidy = described_class.parse_row(valid_row)
+      messy = described_class.parse_row(
+        valid_row.merge('HomeTeam' => '  Manchester   United ', 'AwayTeam' => 'FULHAM')
+      )
+
+      expect(messy.provider_key).to eq(tidy.provider_key)
+    end
+
+    it 'is unaffected by a single-digit hour in the kickoff time' do
+      padded = described_class.parse_row(valid_row.merge('Time' => '09:05'))
+      loose = described_class.parse_row(valid_row.merge('Time' => '9:05'))
+
+      expect(loose.kickoff_at).to eq(padded.kickoff_at)
+      expect(loose.provider_key).to eq(padded.provider_key)
+    end
+
+    it 'uses the calendar date rather than the raw date string' do
+      from_padded = described_class.parse_row(valid_row.merge('Date' => '01/01/2025'))
+      from_loose = described_class.parse_row(valid_row.merge('Date' => '1/1/2025'))
+
+      expect(from_loose).to be_a(Import::MatchRow)
+      expect(from_loose.provider_key).to eq(from_padded.provider_key)
+    end
+
+    it 'is distinct for different fixtures' do
+      a = described_class.parse_row(valid_row)
+      b = described_class.parse_row(valid_row.merge('AwayTeam' => 'Chelsea'))
+
+      expect(a.provider_key).not_to eq(b.provider_key)
+    end
+  end
+
+  describe 'display names versus normalized identity' do
+    it 'preserves the source display name verbatim' do
+      row = described_class.parse_row(
+        rows.first.merge('HomeTeam' => 'Brighton & Hove Albion')
+      )
+
+      expect(row.home_team_name).to eq('Brighton & Hove Albion')
+    end
+  end
+
+  describe 'season label' do
+    it 'never infers a season from the kickoff date' do
+      row = described_class.parse_row(rows.first)
+
+      expect(row.season_label).to be_nil
+    end
+  end
+
+  describe 'MatchRow immutability' do
+    it 'is frozen once constructed' do
+      row = described_class.parse_row(rows.first)
+
+      expect(row).to be_frozen
+    end
+
+    it 'has a frozen provider key' do
+      row = described_class.parse_row(rows.first)
+
+      expect(row.provider_key).to be_frozen
+    end
+
+    it 'cannot be mutated after construction' do
+      row = described_class.parse_row(rows.first)
+
+      expect { row.status = 'cancelled' }.to raise_error(FrozenError)
+    end
+  end
+
+  describe 'the mixed-status fixture' do
+    let(:mixed_path) do
+      Rails.root.join('..', 'data', 'fixtures',
+                      'football_data_premier_league_sample_mixed_statuses.csv').to_s
+    end
+
+    it 'parses every row successfully' do
+      results = described_class.parse_all(Import::CsvReader.read(mixed_path))
+
+      expect(results.map(&:success?)).to all(be(true))
+    end
+
+    it 'covers completed, postponed and scheduled rows' do
+      rows = described_class.parse_all(Import::CsvReader.read(mixed_path)).map(&:row)
+
+      expect(rows.map(&:status)).to eq(
+        %w[completed completed completed completed postponed scheduled scheduled]
+      )
+    end
+
+    it 'keeps scores only on completed rows' do
+      rows = described_class.parse_all(Import::CsvReader.read(mixed_path)).map(&:row)
+
+      expect(rows.select { |row| row.status == 'completed' })
+        .to all(satisfy { |row| row.home_score.is_a?(Integer) && row.away_score.is_a?(Integer) })
+      expect(rows.reject { |row| row.status == 'completed' })
+        .to all(satisfy { |row| row.home_score.nil? && row.away_score.nil? })
     end
   end
 end

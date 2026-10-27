@@ -5,6 +5,14 @@ require 'rails_helper'
 # nothing about football — it only guarantees that the file exists, is parseable
 # and carries the columns the caller says it needs. That keeps "the shape of the
 # file" separate from "what the columns mean" (which belongs to the adapter).
+#
+# Failure modes are distinct types so a caller can react differently:
+#   FileNotFound   — the path does not exist
+#   EmptyFile      — the file exists but has no content at all
+#   MissingHeaders — the header line exists but lacks required columns
+#   MalformedCsv   — CSV syntax could not be parsed
+# Blank lines are dropped, and the index returned to the adapter is a data-row
+# index (0-based), so error messages number rows as the reader delivered them.
 RSpec.describe Import::CsvReader do
   # A fixture that mirrors football-data.co.uk's real Premier League export.
   # Local only — the specs must never touch the network.
@@ -79,11 +87,109 @@ RSpec.describe Import::CsvReader do
     end
   end
 
+  describe 'encoding' do
+    it 'strips a UTF-8 byte-order mark so the first header is usable' do
+      Tempfile.create(['bom', '.csv']) do |file|
+        file.write("\xEF\xBB\xBFDiv,HomeTeam\n")
+        file.write("E0,Arsenal\n")
+        file.flush
+
+        rows = described_class.read(file.path, required: %w[Div])
+
+        expect(rows.first['Div']).to eq('E0')
+        expect(rows.first.keys).to include('Div')
+        expect(rows.first.keys.first).not_to start_with("\xEF\xBB\xBF")
+      end
+    end
+
+    it 'decodes UTF-8 team names without corrupting them' do
+      Tempfile.create(['utf8', '.csv']) do |file|
+        file.write("Div,HomeTeam\n")
+        file.write("E0,Atlético Madrid\n")
+        file.flush
+
+        rows = described_class.read(file.path)
+
+        expect(rows.first['HomeTeam']).to eq('Atlético Madrid')
+        expect(rows.first['HomeTeam'].valid_encoding?).to be(true)
+      end
+    end
+  end
+
+  describe 'empty and headerless files' do
+    it 'raises EmptyFile for a zero-byte file' do
+      Tempfile.create(['empty', '.csv']) do |file|
+        file.flush
+
+        expect {
+          described_class.read(file.path, required: %w[Div])
+        }.to raise_error(Import::CsvReader::EmptyFile)
+      end
+    end
+
+    it 'raises EmptyFile for a file containing only whitespace' do
+      Tempfile.create(['blank', '.csv']) do |file|
+        file.write("\n\n")
+        file.flush
+
+        expect {
+          described_class.read(file.path)
+        }.to raise_error(Import::CsvReader::EmptyFile)
+      end
+    end
+
+    it 'raises MissingHeaders when the header line is absent but data exists' do
+      Tempfile.create(['headerless', '.csv']) do |file|
+        file.write("E0,Arsenal\n")
+        file.flush
+
+        expect {
+          described_class.read(file.path, required: %w[Div HomeTeam])
+        }.to raise_error(Import::CsvReader::MissingHeaders)
+      end
+    end
+  end
+
+  describe 'malformed CSV' do
+    it 'raises MalformedCsv, not MissingHeaders, for a syntax error' do
+      Tempfile.create(['malformed', '.csv']) do |file|
+        file.write("Div,HomeTeam\n")
+        file.write("E0,\"unterminated\n")
+        file.flush
+
+        expect {
+          described_class.read(file.path, required: %w[Div HomeTeam])
+        }.to raise_error(Import::CsvReader::MalformedCsv) { |error|
+          expect(error).not_to be_a(Import::CsvReader::MissingHeaders)
+          expect(error.message).to match(/malformed|unterminated/i)
+        }
+      end
+    end
+
+    it 'does not relabel unrelated IO failures as parsing errors' do
+      # A directory is not a CSV; that is a caller mistake, not malformed data.
+      expect {
+        described_class.read(Dir.tmpdir)
+      }.to raise_error(Import::CsvReader::FileNotFound)
+    end
+  end
+
   describe 'error handling' do
     it 'raises FileNotFound for a path that does not exist' do
       expect {
         described_class.read('/nonexistent/does_not_exist.csv')
       }.to raise_error(Import::CsvReader::FileNotFound)
+    end
+
+    it 'exposes distinct error classes that are all StandardError' do
+      [
+        Import::CsvReader::FileNotFound,
+        Import::CsvReader::EmptyFile,
+        Import::CsvReader::MissingHeaders,
+        Import::CsvReader::MalformedCsv,
+      ].each do |klass|
+        expect(klass.ancestors).to include(StandardError)
+      end
     end
   end
 end

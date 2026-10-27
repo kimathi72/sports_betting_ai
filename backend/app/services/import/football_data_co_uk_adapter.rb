@@ -20,11 +20,30 @@ module Import
     # football-data.co.uk writes dates as dd/mm/yyyy.
     DATE_FORMAT = "%d/%m/%Y".freeze
 
-    # FTR is the full-time result from the home team's perspective. Any value here
-    # means the match finished, so it maps to the `completed` status. Absent
-    # results (pre-season fixtures published early) stay `scheduled`.
+    # A strict four-digit year. `Date.strptime('%d/%m/%Y')` would happily read
+    # "16/08/24" as the year 24 AD, which is almost never what an operator meant,
+    # so the shape is checked before strptime sees it.
+    DATE_PATTERN = %r{\A(\d{1,2})/(\d{1,2})/(\d{4})\z}.freeze
+
+    # FTR is the full-time result from the home team's perspective. It is the
+    # single field that says whether a row asserts a finished result. The policy:
+    #
+    #   H / D / A — a completed match; BOTH scores are required and must be valid.
+    #   P         — postponed; no result, so scores must be absent.
+    #   blank     — scheduled, but ONLY when both scores are absent. A blank FTR
+    #               beside a score means the export disagrees with itself; that is
+    #               rejected rather than silently discarding the score.
+    #   anything  — unknown; rejected. A new code needs a deliberate mapping.
+    #
+    # Codes are case-sensitive: a lowercase "h" is a provider change that should
+    # be reviewed, not guessed at.
     COMPLETED_STATUS = "completed".freeze
     SCHEDULED_STATUS = "scheduled".freeze
+    POSTPONED_STATUS = "postponed".freeze
+    COMPLETED_CODES = %w[H D A].freeze
+    POSTPONED_CODES = %w[P].freeze
+    STATUS_BY_CODE = (COMPLETED_CODES.index_with { COMPLETED_STATUS }
+                                      .merge(POSTPONED_CODES.index_with { POSTPONED_STATUS })).freeze
 
     # Parses a single raw row into a `RowResult`.
     def self.parse(row, index: 0)
@@ -62,62 +81,106 @@ module Import
 
     private
 
+    # Checks run cheapest-and-most-actionable first: identity, then the date,
+    # then the result policy. An unparseable date makes a row meaningless even if
+    # its scores are fine, so the date message reaches the operator first.
     def validate(row)
+      return "competition code (Div) is missing" if blank?(row["Div"])
       return "home team name is missing" if blank?(row["HomeTeam"])
       return "away team name is missing" if blank?(row["AwayTeam"])
 
-      # Date first: an unparseable date makes the row meaningless even if the
-      # scores are fine, and the message is the most actionable to an operator.
-      begin
-        kickoff_at(row)
-      rescue ArgumentError
-        return "date/time is not a valid timestamp: #{row["Date"]} #{row["Time"]}".strip
-      end
+      date_error = timestamp_error(row)
+      return date_error if date_error
 
-      score_error(row)
+      result_error(row)
     end
 
-    # Scores must be absent together, non-negative and integral when present.
-    # Mirrors the matches table's check constraints so bad rows are rejected with
-    # a row-level message rather than a database exception.
-    def score_error(row)
+    def timestamp_error(row)
+      date = parse_date(row["Date"])
+      return "date is missing" if date.nil?
+      return "date is not a valid dd/mm/yyyy date: #{row["Date"]}" if date == :invalid
+
+      time = parse_time(row["Time"])
+      return "kickoff time (Time) is missing" if time.nil?
+      return "kickoff time is not a valid HH:MM time: #{row["Time"]}" if time == :invalid
+
+      nil
+    end
+
+    # The FTR policy. Every branch is deliberate; see COMPLETED_CODES above.
+    # This mirrors the matches table's check constraints so a bad row is rejected
+    # with a row-level message instead of a database exception.
+    def result_error(row)
+      code = row["FTR"].to_s.strip
       home = row["FTHG"]
       away = row["FTAG"]
+      has_scores = !(blank?(home) && blank?(away))
 
-      return nil if blank?(home) && blank?(away)
+      if code.empty?
+        # No outcome asserted. Scores beside a blank FTR are contradictory data.
+        return "FTR is blank but a score is present; a finished result needs a " \
+               "full-time result code (H, D or A)" if has_scores
+        return nil
+      end
+
+      unless STATUS_BY_CODE.key?(code)
+        return "unknown full-time result code (FTR): #{code}"
+      end
+
+      return nil if STATUS_BY_CODE.fetch(code) == POSTPONED_STATUS && !has_scores
+      if STATUS_BY_CODE.fetch(code) == POSTPONED_STATUS
+        return "FTR shows a postponed match (#{code}) but scores are present"
+      end
+
+      return "a completed match (FTR=#{code}) must carry both scores" unless has_scores
       return "only one score is present; both or neither are required" if blank?(home) || blank?(away)
 
       [home, away].each do |value|
-        return "score is not a non-negative integer: #{value}" unless value.to_s.match?(/\A\d+\z/)
+        return "score is not a non-negative integer: #{value}" unless score?(value)
       end
 
       nil
     end
 
     def build_row(row)
-      completed = !blank?(row["FTR"])
+      status = STATUS_BY_CODE.fetch(row["FTR"].to_s.strip, SCHEDULED_STATUS)
+      completed = status == COMPLETED_STATUS
 
       MatchRow.new(
         provider: PROVIDER,
         provider_key: provider_key(row),
-        competition_code: row["Div"].to_s.strip,
+        competition_code: normalize_text(row["Div"]),
         season_label: nil, # supplied by the import run, not present in the file
+        # Display names are kept as the source spells them, trimmed only. The
+        # canonical identity is `Team.normalize`d, which is the resolver's job.
         home_team_name: row["HomeTeam"].to_s.strip,
         away_team_name: row["AwayTeam"].to_s.strip,
         kickoff_at: kickoff_at(row),
-        status: completed ? COMPLETED_STATUS : SCHEDULED_STATUS,
+        status: status,
         home_score: completed ? Integer(row["FTHG"]) : nil,
         away_score: completed ? Integer(row["FTAG"]) : nil,
       )
     end
 
+    # The provider publishes no match id, so this key IS the match identity and
+    # must be stable across harmless formatting differences. Each component is
+    # normalised (case, internal whitespace) and the date/time are rendered from
+    # their parsed values, so "9:05" and "09:05" or "1/1/2025" and "01/01/2025"
+    # cannot produce two identities for one fixture. Team names use the same
+    # policy as the canonical Team identity (`Team.normalize`), so the key and the
+    # resolved teams agree about what counts as the same name.
+    #
+    # Empty components are never allowed to collapse: validation has already
+    # rejected blank Div and team names, so a key always has five real parts.
     def provider_key(row)
+      kickoff = kickoff_at(row)
+
       [
-        row["Div"].to_s.strip,
-        row["Date"].to_s.strip,
-        row["Time"].to_s.strip,
-        row["HomeTeam"].to_s.strip,
-        row["AwayTeam"].to_s.strip,
+        normalize_text(row["Div"]),
+        kickoff.strftime("%Y-%m-%d"),
+        kickoff.strftime("%H:%M"),
+        Team.normalize(row["HomeTeam"]),
+        Team.normalize(row["AwayTeam"]),
       ].join("|")
     end
 
@@ -125,20 +188,50 @@ module Import
     # Kickoffs are published in local UK time; this project stores UTC and applies
     # timezone handling at presentation, so the instant is interpreted as UTC here.
     def kickoff_at(row)
-      date = Date.strptime(row["Date"].to_s.strip, DATE_FORMAT)
+      date = parse_date(row["Date"])
       hour, minute = parse_time(row["Time"])
 
       Time.utc(date.year, date.month, date.day, hour, minute)
     end
 
+    # Returns a Date, nil when absent, or :invalid when the text is not a strict
+    # dd/mm/yyyy date with a four-digit year.
+    def parse_date(value)
+      text = value.to_s.strip
+      return nil if text.empty?
+      return :invalid unless text.match?(DATE_PATTERN)
+
+      Date.strptime(text, DATE_FORMAT)
+    rescue Date::Error
+      :invalid
+    end
+
+    # Returns [hour, minute], nil when absent, or :invalid when unparseable or
+    # out of range. A missing time is reported, never widened to midnight: that
+    # would invent a kickoff the source did not publish.
     def parse_time(value)
       text = value.to_s.strip
-      return [0, 0] if text.empty?
+      return nil if text.empty?
 
       match = text.match(/\A(\d{1,2}):(\d{2})\z/)
-      raise ArgumentError, "invalid time: #{text}" unless match
+      return :invalid unless match
 
-      [Integer(match[1]), Integer(match[2])]
+      # Integer(..., 10): a leading zero is decimal padding, not octal.
+      hour = Integer(match[1], 10)
+      minute = Integer(match[2], 10)
+      return :invalid if hour > 23 || minute > 59
+
+      [hour, minute]
+    end
+
+    # Collapses internal whitespace and strips edges. Competition codes are
+    # compared case-insensitively because "e0" and "E0" are one league.
+    def normalize_text(value)
+      value.to_s.strip.gsub(/\s+/, " ").upcase
+    end
+
+    def score?(value)
+      value.to_s.strip.match?(/\A\d+\z/)
     end
 
     def blank?(value)
