@@ -17,8 +17,46 @@
 class ImportFootballDataJob < ApplicationJob
   queue_as :imports
 
-  # Permanent: the input itself is wrong, so repeating it cannot help.
+  # Permanent: the input itself is wrong, so repeating it cannot help. Retrying
+  # would burn worker capacity and delay the operator seeing the real problem.
   class ImportFailed < StandardError; end
+
+  # Transient: the infrastructure failed, not the data. A retry can succeed, and
+  # the importer is idempotent, so a retry that partially ran before failing is
+  # safe to repeat.
+  class TransientFailure < StandardError; end
+
+  # Errors that mean "try again", never "fix the file". Database-connection loss,
+  # deadlocks and lock timeouts are the realistic contenders for a long import
+  # holding row locks while another run competes for the same mappings.
+  TRANSIENT_ERRORS = [
+    ActiveRecord::ConnectionNotEstablished,
+    ActiveRecord::Deadlocked,
+    ActiveRecord::LockWaitTimeout,
+    ActiveRecord::StatementInvalid,
+    PG::ConnectionBad,
+    Redis::BaseConnectionError,
+  ].freeze
+
+  # Bounded: a transient problem that outlasts a handful of attempts is an
+  # outage, and an operator should be told rather than the queue retried forever.
+  MAX_RETRIES = 3
+  RETRY_WAIT = 30 # seconds; Sidekiq applies its own backoff on top
+
+  # Permanent failures are discarded so they surface immediately as failed work.
+  rescue_from ImportFailed do |error|
+    Rails.logger.warn("ImportFootballDataJob permanent failure: #{error.message}")
+    raise error
+  end
+
+  # Transient failures are wrapped and retried with a bound. The original error is
+  # kept as the cause so the log still shows what actually broke.
+  rescue_from(*TRANSIENT_ERRORS) do |error|
+    Rails.logger.warn("ImportFootballDataJob transient failure: #{error.class}: #{error.message}")
+    raise TransientFailure, "transient failure, retrying: #{error.class}"
+  end
+
+  retry_on TransientFailure, wait: RETRY_WAIT, attempts: MAX_RETRIES
 
   # Runs the import and returns the result. The result is the job's value, but a
   # rejected import must not look successful to the queue, so `perform` raises
