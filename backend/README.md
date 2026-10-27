@@ -194,3 +194,98 @@ suite, so development data can never be touched by a test run.
 arity of `pop`, which Sidekiq 7.3.x still calls with one argument; allowing 3.x
 crashes the Sidekiq scheduler thread at boot. Revisit this pin once Sidekiq
 supports `connection_pool` 3.x.
+
+## Importing a football-data.co.uk CSV
+
+One file is imported at a time, into the canonical `Competition` / `Season` /
+`Team` / `Match` schema, in a single transaction. Re-running the same file is
+safe: existing matches are reused and reported as *skipped*.
+
+### Required arguments
+
+| Argument | Meaning |
+| -------- | ------- |
+| `path`   | **Absolute** path to the CSV file. Inside Docker the repository's `data/` directory is mounted at `/data` (read-only). |
+| `season` | The canonical season label, e.g. `2024/25`. Supplied by the operator; **never** inferred from the fixture dates. |
+
+Both are validated before anything is imported. A missing file, a relative path
+or an absent/malformed season label is refused with a non-zero exit status.
+
+### Running it
+
+```bash
+# The committed synthetic fixture, into the development database
+docker compose --profile application exec -T web \
+  bundle exec rake "import:football_data[/data/fixtures/football_data_premier_league_sample.csv,2024/25]"
+```
+
+A successful run prints a summary and exits `0`:
+
+```
+imported football_data_premier_league_sample.csv (season 2024/25)
+  imported 7 rows: 7 created, 0 updated, 0 skipped, 0 rejected
+```
+
+Running it a second time reuses everything and changes nothing:
+
+```
+imported football_data_premier_league_sample.csv (season 2024/25)
+  imported 7 rows: 0 created, 0 updated, 7 skipped, 0 rejected
+```
+
+A failed run prints the row errors that need fixing and exits `1`:
+
+```
+import failed: broken.csv (season 2024/25)
+  row 2: home team name is missing
+```
+
+At most 10 errors are printed; the rest are summarised as a count.
+
+### What a failure means
+
+The whole batch is rolled back. A failed import leaves **no** competitions,
+seasons, teams, matches or provider identifiers behind — including any created by
+rows that were themselves valid. Fix the reported rows and re-run; nothing is
+half-applied.
+
+### Result counters
+
+`Import::Result` reports one outcome per input row, so the numbers always add up:
+
+| Counter | Meaning |
+| ------- | ------- |
+| `input` | data rows read (header excluded, blank lines dropped) |
+| `created` | rows stored as a new match |
+| `updated` | rows that changed an existing match (e.g. a scheduled fixture receiving its first result) |
+| `skipped` | rows that matched a stored match and changed nothing (a repeat import) |
+| `rejected` | rows that failed; always equals `input` on a failed run, because the batch rolled back |
+| `processed` | `created + updated + skipped` |
+
+### Data-integrity policy for `FTR`
+
+| Source value | Result |
+| ------------ | ------ |
+| `H`, `D`, `A` | completed; both scores must be valid non-negative integers |
+| `P` | postponed; scores must be absent |
+| blank, with no scores | scheduled |
+| blank, with any score | **rejected** — a score is never silently discarded |
+| anything else | **rejected** — a new code needs an explicit mapping |
+
+Rows with a blank `Div`, team name, kickoff time or date are rejected, as are
+two-digit years (a strict `dd/mm/yyyy` date is required).
+
+### Identity rules
+
+Provider identity is stored in `external_identifiers` under the `football_data`
+namespace, never matched by display name:
+
+- competition — the provider `Div` code (e.g. `E0`)
+- season — `season:<competition_id>:<label>`
+- team — the provider team name, normalised with `Team.normalize`
+- match — the natural fixture key `DIV|YYYY-MM-DD|HH:MM|home|away`, computed by
+  the adapter from parsed values so harmless case/whitespace differences cannot
+  create a second identity for one fixture
+
+A stored completed result is never overwritten. An incoming row that disagrees
+with it fails the batch.
