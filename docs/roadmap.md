@@ -13,7 +13,7 @@ Status legend: ✅ complete · 🚧 in progress · ⬜ not started
 | 2     | Database connectivity and versioned health API | ✅     |
 | 3     | Initial football domain                        | ✅     |
 | 4     | Data import foundation                         | ✅     |
-| 5     | Asynchronous jobs                              | ⬜     |
+| 5     | Asynchronous jobs                              | ✅     |
 | 6     | Historical data pipeline                       | ⬜     |
 | 7     | Feature engineering                            | ⬜     |
 | 8     | Statistical baseline and ML API                | ⬜     |
@@ -292,8 +292,10 @@ mapping policy is explicit rather than invented:
   used to merge teams.
 - **Match** — resolved by `ExternalIdentifier` on the provider's natural key for the
   fixture (`DIV|YYYY-MM-DD|HH:MM|home|away`), because football-data.co.uk publishes
-  no match id. A duplicate mapping means "already imported" and is reused, not
-  re-created.
+  no match id. The stored identifier is prefixed with the canonical competition and
+  season ids: a fixture recurs every season, so the bare natural key alone would
+  make 2025/26 resolve to the 2024/25 match. A duplicate mapping means "already
+  imported" and is reused, not re-created.
 
 Key normalisation is part of the identity policy, not cosmetic: the date and time
 are rendered from parsed values and the names from `Team.normalize`, so
@@ -335,6 +337,84 @@ docker compose --profile application exec -T web \
 Both arguments are required and validated before the importer runs. The task
 prints a summary plus at most ten row errors, and exits non-zero on failure. See
 `backend/README.md` for the full runbook.
+
+### Path allowlist
+
+An import path is untrusted input. `Import::SourcePath` resolves it with
+`File.realpath` and requires it to sit inside an approved root: `/data` (the
+Compose mount), the repository's `data/` directory, or any directory listed in
+`IMPORT_ALLOWED_ROOTS` (colon-separated, directories only). Symlinks cannot
+escape the boundary because comparison happens on the resolved path.
+
+## Phase 5 — Asynchronous jobs ✅
+
+Runs the Phase 4 import in the background through the existing Sidekiq/Redis
+infrastructure. Still one file per job: no scheduling, no recurring polling and no
+bulk multi-season ingestion, which are Phase 6.
+
+### Jobs
+
+- `ApplicationJob` is the base class. `config/application.rb` selects the Sidekiq
+  adapter outside the test environment and the ActiveJob test adapter inside it,
+  so specs never touch Redis.
+- `ImportFootballDataJob` (`queue_as :imports`) takes a file path and a season
+  label — two strings, so nothing depends on an ActiveRecord object surviving
+  serialisation through Redis. It validates the path and season, delegates entirely
+  to `Import::MatchImporter`, and adds no import logic of its own.
+- `spec/jobs/application_job_spec.rb` pins the execution contract so the first real
+  job cannot silently break it.
+
+### Failure semantics
+
+| Situation | Behaviour |
+| --------- | --------- |
+| Rejected file, bad row, completed-result conflict | `ImportFailed`. Permanent; not retried. The job is marked failed rather than reporting success. |
+| Missing file, path outside the allowlist, invalid season label | `ImportFailed`. Permanent. |
+| Connection loss, deadlock, lock-wait timeout, Redis failure | `TransientFailure`, retried up to `MAX_RETRIES` (3) with a 30s wait plus Sidekiq backoff. |
+| Programming error | Propagates unchanged. Never masked, never reported as success. |
+
+Retrying is safe because the importer is idempotent: a retry that runs after a
+partially completed attempt reuses everything the first attempt wrote and can
+never overwrite a stored completed result.
+
+Only the first row error is logged per run, so a badly broken file cannot flood
+the log. Log lines carry the file's basename, the season label and the summary —
+never file contents or credentials.
+
+### Worker prerequisites
+
+The `sidekiq` Compose service mounts the same `./data:/data:ro` volume as `web`.
+Without that the worker cannot see the paths the web service accepts. The
+`imports` queue is declared in `config/sidekiq.yml` so it is consumed
+independently of `default`.
+
+### Verification
+
+```bash
+make backend-test
+
+# Focused job specs
+docker run --rm --network sports-betting-ai_default \
+  -e RAILS_ENV=test -e DATABASE_HOST=postgres -e DATABASE_PORT=5432 \
+  -e POSTGRES_USER=sports_ai -e POSTGRES_PASSWORD=local_dev_only \
+  -e POSTGRES_TEST_DB=sports_betting_ai_test \
+  -v "$PWD/backend:/app" -v "$PWD/data:/data:ro" -w /app \
+  sports-betting-ai-backend:dev \
+  bash -c 'bundle exec rspec spec/jobs'
+
+# Real worker round trip
+docker compose --profile application up -d sidekiq
+docker compose --profile application exec -T web \
+  bundle exec rails runner 'ImportFootballDataJob.perform_later("/data/fixtures/football_data_premier_league_sample.csv", "2024/25")'
+docker compose --profile application logs sidekiq
+```
+
+Enqueueing alone proves nothing; the worker log must show the job picked up from
+the `imports` queue and finishing within a few hundred milliseconds.
+
+Status: ✅ complete — the single-file import is enqueueable, executes through the
+configured Sidekiq worker, has a tested retry/failure policy, and leaves the
+import foundation's guarantees intact.
 
 ### Limitations and deferred work
 

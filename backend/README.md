@@ -289,3 +289,47 @@ namespace, never matched by display name:
 
 A stored completed result is never overwritten. An incoming row that disagrees
 with it fails the batch.
+
+## Running an import in the background
+
+`ImportFootballDataJob` performs the same import asynchronously through Sidekiq.
+Make sure the worker is running — it mounts `./data` read-only at `/data`, like
+`web`:
+
+```bash
+docker compose --profile application up -d sidekiq
+```
+
+Enqueue a job:
+
+```bash
+docker compose --profile application exec -T web \
+  bundle exec rails runner \
+  'ImportFootballDataJob.perform_later("/data/fixtures/football_data_premier_league_sample.csv", "2024/25")'
+```
+
+Watch it run:
+
+```bash
+docker compose --profile application logs -f sidekiq
+```
+
+The log shows the job being picked up from the `imports` queue and a summary line:
+
+```
+ImportFootballDataJob ok file=football_data_premier_league_sample.csv season=2024/25 imported 7 rows: 7 created, 0 updated, 0 skipped, 0 rejected
+```
+
+### Failure behaviour
+
+A rejected import is a **failed job** (it raises `ImportFootballDataJob::ImportFailed`
+after logging), so a broken import never looks healthy in the queue.
+
+| Cause | Retried? |
+| ----- | -------- |
+| Bad row, missing file, bad season label, completed-result conflict | No — permanent |
+| Database connection loss, deadlock, lock-wait timeout, Redis failure | Yes — up to 3 attempts, 30s apart plus Sidekiq backoff |
+| Programming error | No — propagates unchanged |
+
+Retrying is safe: the importer is idempotent, so a retry reuses whatever a previous
+attempt committed and never overwrites a stored completed result.

@@ -43,20 +43,39 @@ class ImportFootballDataJob < ApplicationJob
   MAX_RETRIES = 3
   RETRY_WAIT = 30 # seconds; Sidekiq applies its own backoff on top
 
-  # Permanent failures are discarded so they surface immediately as failed work.
-  rescue_from ImportFailed do |error|
-    Rails.logger.warn("ImportFootballDataJob permanent failure: #{error.message}")
-    raise error
-  end
+  # RETRY OWNERSHIP. ActiveJob's `retry_on` and Sidekiq's own retry setting both
+  # count attempts, so mixing them double-counts: with `attempts: 0` here, Sidekiq
+  # still re-queued the wrapper once (observed as "Stopped retrying ... reoccurred
+  # on 1 attempts" plus an entry in the retry set). This job therefore lets
+  # ActiveJob decide *whether* a failure is retryable and lets Sidekiq bound *how
+  # many* attempts happen, via `sidekiq_retry_in`:
+  #
+  #   - a permanent ImportFailed is never rescheduled (Sidekiq returns :discard)
+  #   - a transient failure is retried, up to MAX_RETRIES total
+  #   - anything else is an unexpected error and gets the bounded retry too, so a
+  #     genuine outage is not thrown away, but it is never reported as success
+  sidekiq_options retry: MAX_RETRIES
 
-  # Transient failures are wrapped and retried with a bound. The original error is
-  # kept as the cause so the log still shows what actually broke.
+  # Transient failures are wrapped so the retry policy sees a single, stable class
+  # while the original error is preserved as the cause for the log.
   rescue_from(*TRANSIENT_ERRORS) do |error|
     Rails.logger.warn("ImportFootballDataJob transient failure: #{error.class}: #{error.message}")
-    raise TransientFailure, "transient failure, retrying: #{error.class}"
+    raise TransientFailure, "transient failure, retrying: #{error.class}", cause: error
   end
 
-  retry_on TransientFailure, wait: RETRY_WAIT, attempts: MAX_RETRIES
+  # Ask Sidekiq not to reschedule a permanent failure. Returning :discard from
+  # `sidekiq_retry_in` is the supported way to stop retries for one exception
+  # class without disabling them for the transient ones.
+  sidekiq_retry_in do |_count, exception, _jobinst|
+    exception.is_a?(ImportFailed) ? :discard : RETRY_WAIT
+  end
+
+  sidekiq_retries_exhausted do |msg, exception|
+    Rails.logger.warn(
+      "ImportFootballDataJob gave up after #{MAX_RETRIES} attempts: " \
+      "#{exception.class}: #{exception.message}"
+    )
+  end
 
   # Runs the import and returns the result. The result is the job's value, but a
   # rejected import must not look successful to the queue, so `perform` raises

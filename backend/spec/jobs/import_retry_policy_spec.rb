@@ -138,6 +138,19 @@ RSpec.describe ImportFootballDataJob, "retry policy" do
     it "does not list permanent import failures as transient" do
       expect(described_class::TRANSIENT_ERRORS).not_to include(ImportFootballDataJob::ImportFailed)
     end
+
+    it "discards permanent failures instead of enqueueing a retry" do
+      # Sidekiq's default retries any unhandled exception 25 times. A bad file must
+      # not sit in the retry set for hours. Proven against the queue adapter.
+      path = File.join(@scratch_dir, "bad_discard.csv")
+      File.write(path, "Div,Date,Time,HomeTeam,AwayTeam,FTHG,FTAG,FTR\nE0,17/08/2024,15:00,,X,1,0,H\n")
+
+      described_class.perform_later(path, season_label)
+
+      expect { perform_enqueued_jobs }.to raise_error(ImportFootballDataJob::ImportFailed)
+      # A discard leaves nothing queued and nothing scheduled for a retry.
+      expect(ActiveJob::Base.queue_adapter.enqueued_jobs).to be_empty
+    end
   end
 
   describe "retry safety" do
