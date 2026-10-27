@@ -12,7 +12,7 @@ Status legend: ✅ complete · 🚧 in progress · ⬜ not started
 | 1     | Rails API bootstrap and RSpec                  | ✅     |
 | 2     | Database connectivity and versioned health API | ✅     |
 | 3     | Initial football domain                        | ✅     |
-| 4     | Data import foundation                         | ⬜     |
+| 4     | Data import foundation                         | ✅     |
 | 5     | Asynchronous jobs                              | ⬜     |
 | 6     | Historical data pipeline                       | ⬜     |
 | 7     | Feature engineering                            | ⬜     |
@@ -197,27 +197,51 @@ docker run --rm --network sports-betting-ai_default \
 ```
 
 Status: ✅ complete — five domain entities, database-enforced integrity and three
-read-only index endpoints, verified by the full RSpec suite (169 examples), live
-endpoint smoke tests and container health checks.
+read-only index endpoints, verified by live endpoint smoke tests, container health
+checks and the full RSpec suite. The exact example count is recorded by the
+Phase 4 test run below rather than pinned here, since it grows with every phase.
 
-## Phase 4 — Data import foundation 🚧
+## Phase 4 — Data import foundation ✅
 
-Imports football-data.co.uk CSV fixtures into the canonical Phase 3 schema,
-idempotently and transactionally. No Sidekiq jobs, no bulk season ingestion, no
+Imports one football-data.co.uk CSV file into the canonical Phase 3 schema,
+transactionally and idempotently. No Sidekiq jobs, no bulk season ingestion, no
 provider polling — this milestone is the import *foundation* only.
 
 ### Import contract and design
 
-The pipeline is split into four single-purpose layers. Provider-specific parsing
-is deliberately kept away from domain persistence, so a second provider can be
-added later by writing one adapter and reusing the importer unchanged.
+The pipeline is split into single-purpose layers. Provider-specific parsing is
+deliberately kept away from domain persistence, so a second provider can be added
+later by writing one adapter and reusing the importer unchanged.
 
 | Layer | Class | Responsibility |
 | ----- | ----- | -------------- |
 | 1. Read | `Import::CsvReader` | Open the file, validate the declared columns exist, return raw rows keyed by the file's own header text. Knows nothing about football. |
 | 2. Map | `Import::FootballDataCoUkAdapter` | Turn each raw row into a normalized `Import::MatchRow` (or an error). Knows football-data.co.uk's column names and date format; owns all provider knowledge. |
-| 3. Resolve | `Import::ReferenceResolver` | Map provider identifiers to canonical records via `ExternalIdentifier`, creating records only when no verified mapping exists. |
+| 3. Resolve | `Import::ReferenceResolver` | Map provider identifiers to canonical records via `ExternalIdentifier`, returning an `Import::Resolution` outcome (never a raw database exception). |
 | 4. Persist | `Import::MatchImporter` | Wrap the whole batch in one transaction, enforce atomicity, detect conflicting results and return an `Import::Result`. |
+| — Run | `Import::Command` + `rake import:football_data` | Validate operator arguments, invoke the importer, print a concise report, exit non-zero on failure. |
+
+### Import result contract
+
+`Import::Result` reports exactly one outcome per input row, and the constructor
+enforces the arithmetic rather than trusting callers:
+
+| Counter | Meaning |
+| ------- | ------- |
+| `input` | data rows read (header excluded, blank lines dropped) |
+| `created` | rows stored as a new match |
+| `updated` | rows that changed an existing match (scheduled/postponed → completed, or a status change) |
+| `skipped` | rows that matched a stored match and changed nothing |
+| `rejected` | rows that failed validation, resolution or persistence |
+| `processed` | derived: `created + updated + skipped` |
+
+`skipped` deliberately replaces the earlier, ambiguous `reused` counter: reusing
+a canonical team happens *inside* a row that still created, updated or skipped a
+match, so the two concepts never share a counter. Enforced invariants:
+`created + updated + skipped + rejected == input`; a successful result has
+`rejected == 0`; a failed result has `rejected > 0` and reports no writes, because
+the batch was rolled back. Errors are structured hashes carrying the zero-based
+`index`, the one-based `row`, and a plain-text `message`.
 
 ### Provider and fixture provenance
 
@@ -228,6 +252,27 @@ adapter relies on (`Div`, `Date`, `Time`, `HomeTeam`, `AwayTeam`, `FTHG`, `FTAG`
 `data/fixtures/football_data_premier_league_sample.csv` is **synthetic**: seven
 rows written by hand in the documented column layout, not downloaded historical
 data. It is redistributable and lets the parser specs run without network access.
+A second synthetic fixture,
+`data/fixtures/football_data_premier_league_sample_mixed_statuses.csv`, adds
+postponed and scheduled rows so the full status policy is exercised end to end.
+Both are committed, hand-written test data; neither is downloaded historical data,
+and `data/raw/` remains git-ignored.
+
+### FTR data-integrity policy
+
+`FTR` is the field that decides whether a row asserts a finished result:
+
+| Source value | Outcome |
+| ------------ | ------- |
+| `H`, `D`, `A` | completed; **both** scores required and must be non-negative integers |
+| `P` | postponed; scores must be absent |
+| blank, no scores | scheduled |
+| blank, with any score | rejected — a score is never silently discarded |
+| any other value, including lowercase | rejected; a new code needs an explicit mapping |
+
+A blank `Div`, blank team name, missing/malformed kickoff time or missing date is
+rejected. Dates must be strict `dd/mm/yyyy` with a **four-digit year**: Ruby's
+`Date.strptime` would otherwise read `16/08/24` as the year 24 AD.
 
 ### Identity and mapping policy
 
@@ -246,25 +291,50 @@ mapping policy is explicit rather than invented:
   policy; thereafter the mapping is reused. Unverified display-name matching is not
   used to merge teams.
 - **Match** — resolved by `ExternalIdentifier` on the provider's natural key for the
-  fixture (`Div|Date|Time|HomeTeam|AwayTeam`), because football-data.co.uk publishes
+  fixture (`DIV|YYYY-MM-DD|HH:MM|home|away`), because football-data.co.uk publishes
   no match id. A duplicate mapping means "already imported" and is reused, not
   re-created.
 
+Key normalisation is part of the identity policy, not cosmetic: the date and time
+are rendered from parsed values and the names from `Team.normalize`, so
+`9:05`/`09:05`, `1/1/2025`/`01/01/2025` and `FULHAM`/`Fulham` cannot create two
+identities for one fixture. Team mappings are keyed on the normalised name for the
+same reason; the canonical `Team` keeps the first display spelling it saw.
+
 ### Idempotency and failure semantics
 
-- The whole batch runs in **one database transaction**. Any row-level error aborts
-  the batch, so a failed import leaves **no partial records and no partial
-  identifiers** behind. Verified in the importer specs by querying the tables
-  directly after a deliberate failure.
-- Re-running the same file is safe: canonical records and identifiers are resolved
-  by the mappings above, so a second run reuses everything and creates nothing.
-- Uniqueness is protected by the existing database constraints on
-  `external_identifiers` and the canonical tables, so concurrent runs cannot both
-  insert the same mapping — a pre-insert lookup alone would race.
+Every claim below is backed by a database-backed example in
+`spec/services/import/match_importer_safety_spec.rb`, which asserts on table
+counts and stored rows rather than on the returned result object.
+
+- The whole batch runs in **one database transaction**. A rejected row aborts the
+  batch, so a failed import leaves **no** competitions, seasons, teams, matches or
+  external identifiers behind — including records created by earlier, valid rows in
+  the same batch. Existing records are preserved untouched.
+- Re-running the same file is safe: a second run reports every row as `skipped`
+  and every table count is unchanged.
+- Uniqueness is protected by the database constraints on `external_identifiers` and
+  the canonical tables. Because a pre-insert lookup alone would race, a concurrent
+  writer that wins either the mapping index or the canonical unique index is
+  recovered by re-reading the winning record. Only uniqueness failures are treated
+  this way; unrelated database errors are reported, never masked.
 - An existing **completed** match whose stored score disagrees with the incoming row
-  is reported as a conflict and never silently overwritten. An existing scheduled
-  fixture may be upgraded to completed, which is the normal "result arrives later"
-  path.
+  fails the batch and the stored result is left unchanged. A completed match is also
+  never downgraded back to scheduled.
+- A scheduled or postponed fixture that receives its first result is **promoted** to
+  completed in place, counted as `updated` (not `created`), and keeps its original
+  kickoff.
+
+### Manual import command
+
+```bash
+docker compose --profile application exec -T web \
+  bundle exec rake "import:football_data[/data/fixtures/football_data_premier_league_sample.csv,2024/25]"
+```
+
+Both arguments are required and validated before the importer runs. The task
+prints a summary plus at most ten row errors, and exits non-zero on failure. See
+`backend/README.md` for the full runbook.
 
 ### Limitations and deferred work
 
@@ -274,3 +344,27 @@ mapping policy is explicit rather than invented:
   and multi-league bulk ingestion, scheduling and retries are Phase 5/6 work.
 - Season labels are supplied by the operator running the import, not derived from
   the file.
+- Encoding support covers UTF-8 with an optional BOM; other encodings are decoded
+  as UTF-8 with invalid bytes replaced.
+- A provider row that contradicts an already-completed result fails the whole
+  batch rather than being quarantined per row. Partial-success imports are Phase 6
+  work.
+
+### Verification
+
+```bash
+make backend-test
+
+# The import pipeline and its safety guarantees
+docker run --rm --network sports-betting-ai_default \
+  -e RAILS_ENV=test -e DATABASE_HOST=postgres -e DATABASE_PORT=5432 \
+  -e POSTGRES_USER=sports_ai -e POSTGRES_PASSWORD=local_dev_only \
+  -e POSTGRES_TEST_DB=sports_betting_ai_test \
+  -v "$PWD/backend:/app" -v "$PWD/data:/data:ro" -w /app \
+  sports-betting-ai-backend:dev \
+  bash -c 'bundle exec rspec spec/services/import'
+```
+
+Status: ✅ complete — reader, adapter, resolver, transactional importer, result
+contract and manual command, verified by database-backed specs covering
+idempotency, rollback, conflict preservation, promotion and uniqueness races.
