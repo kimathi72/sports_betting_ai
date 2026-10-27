@@ -29,8 +29,10 @@ module Import
     MINIMAL_ATTRIBUTES = %i[provider provider_key competition_code home_team_name
                             away_team_name kickoff_at status].freeze
 
-    def initialize(**kwargs)
-      super
+    # Accepts keyword arguments (as the adapter uses it) and a single Hash, so
+    # specs and callers can build a row from a literal without changing shape.
+    def initialize(attributes = nil, **kwargs)
+      super(**(attributes.is_a?(Hash) ? attributes : {}), **kwargs)
       self.provider = provider.to_s.freeze if provider
       self.provider_key = provider_key.to_s.freeze if provider_key
       self.competition_code = competition_code.to_s.freeze if competition_code
