@@ -19,7 +19,7 @@ module Import
     :status,
     :home_score,
     :away_score,
-    keyword_init: true
+    keyword_init: true,
   ) do
     # Human-readable description used in error messages. Deliberately omits the
     # raw source row so logs never echo a whole line of provider data.
