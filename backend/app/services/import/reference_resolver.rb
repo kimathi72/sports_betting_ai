@@ -239,8 +239,8 @@ module Import
       return Resolution.failure('match requires a season') unless season.is_a?(Season)
       return Resolution.failure('match requires both teams') if home_team.nil? || away_team.nil?
 
-      key = row.provider_key.to_s
-      return Resolution.failure('match provider key is missing') if key.strip.empty?
+      key = match_external_id(row, competition, season)
+      return Resolution.failure('match provider key is missing') if row.provider_key.to_s.strip.empty?
 
       if row.status.to_s.strip.empty? || !Match::STATUSES.include?(row.status)
         return Resolution.failure("unsupported match status: #{row.status.inspect}")
@@ -417,6 +417,14 @@ module Import
     def team_collision_message(existing, attempted)
       "team name collision: #{attempted.inspect} has the same canonical identity as " \
         "existing team #{existing.name.inspect}; map it explicitly instead of merging"
+    end
+
+    # The provider's natural key identifies a fixture within a season, not across
+    # seasons: the same division, date and teams recur every year. Prefixing the
+    # canonical competition and season makes the stored identity unambiguous, so
+    # importing 2025/26 cannot resolve to a 2024/25 match.
+    def match_external_id(row, competition, season)
+      "#{competition.id}:#{season.id}:#{row.provider_key}"
     end
 
     def build_match(row, competition:, season:, home_team:, away_team:)

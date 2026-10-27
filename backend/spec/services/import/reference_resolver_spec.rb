@@ -276,7 +276,12 @@ RSpec.describe Import::ReferenceResolver do
       expect(result.created_record?).to be(true)
 
       identifier = ExternalIdentifier.find_by(provider: 'football_data', match_id: result.record.id)
-      expect(identifier.external_id).to eq(match_row.provider_key)
+      # The provider key is scoped by canonical competition and season, because a
+      # fixture recurs every season and must not collapse into one match.
+      expect(identifier.external_id).to eq(
+        "#{competition.id}:#{season.id}:#{match_row.provider_key}"
+      )
+      expect(identifier.external_id).to end_with(match_row.provider_key)
     end
 
     it 'attaches competition, season and both teams' do

@@ -107,6 +107,10 @@ services:
       RUN_MIGRATIONS: "false"
     volumes:
       - ./backend:/app
+      # The worker resolves the same import paths the `web` service accepts, so
+      # the data directory must be visible to it too. Read-only for the same
+      # reason: imports read fixtures and never write back into the source tree.
+      - ./data:/data:ro
     depends_on:
       postgres:
         condition: service_healthy

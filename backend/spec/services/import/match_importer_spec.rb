@@ -84,13 +84,19 @@ RSpec.describe Import::MatchImporter do
       ).to eq(7)
     end
 
-    it 'stores match identifiers keyed by the natural fixture key' do
+    it 'stores match identifiers keyed by season and the natural fixture key' do
       importer.call
 
       keys = ExternalIdentifier.where(provider: 'football_data').where.not(match_id: nil)
                                .pluck(:external_id)
 
-      expect(keys).to include('E0|2024-08-16|12:30|manchester united|fulham')
+      # Scoped by competition and season so the same fixture in another season is
+      # a different match. See season_scoping_spec.rb.
+      competition = Competition.first
+      season = Season.first
+      expect(keys).to include(
+        "#{competition.id}:#{season.id}:E0|2024-08-16|12:30|manchester united|fulham"
+      )
       expect(keys.uniq.length).to eq(7)
     end
 
