@@ -203,11 +203,17 @@ module Import
         return :updated
       end
 
-      # Neither side has a result: keep the stored fixture, but apply a status
-      # change that carries information (e.g. scheduled -> postponed).
-      changed = existing.status != row.status
-      if changed
-        existing.update!(status: row.status)
+      # Neither side has a result: keep the stored fixture, but apply a change
+      # that carries information. That includes a RESCHEDULE — the provider
+      # rewrites the same fixture with a new kickoff, and ignoring it would leave
+      # predictions aimed at a time that no longer exists.
+      status_changed = existing.status != row.status
+      kickoff_changed = row.kickoff_at.present? && existing.kickoff_at != row.kickoff_at
+
+      if status_changed || kickoff_changed
+        existing.status = row.status if status_changed
+        existing.kickoff_at = row.kickoff_at if kickoff_changed
+        existing.save!
         return :updated
       end
 

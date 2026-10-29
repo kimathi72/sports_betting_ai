@@ -1,0 +1,58 @@
+# Premier League (football-data.co.uk division E0) historical import manifest.
+#
+# Each entry names its OWN season label. The label is never inferred from the
+# fixture dates: a season boundary (e.g. a postponed August fixture) would
+# otherwise attach history to the wrong season.
+#
+# The `path` values point at /data/raw inside the app container, which is backed
+# by the repository's git-ignored data/raw directory. Populate it first:
+#
+#   docker compose exec -T web \
+#     bundle exec rake "import:download[2015/16,2016/17,2017/18,2018/19,2019/20,2020/21,2021/22,2022/23,2023/24,2024/25,2025/26]"
+#
+# Then import:
+#
+#   docker compose exec -T web \
+#     bundle exec rake "import:historical[/data/manifests/premier_league_history.yml,2015/16]"
+#
+# The second rake argument is the run label shown in output. The per-entry
+# `season` below is what actually scopes each file's matches.
+#
+# SCOPE: completed seasons only. This file is the reproducible backfill, and it
+# must stay stable so a reported row count means the same thing next week. The
+# in-progress season lives in premier_league_current.yml instead; the two files
+# must never overlap (enforced by manifest_catalogue_spec.rb).
+
+- path: /data/raw/1516_E0.csv
+  season: "2015/16"
+  competition: E0
+- path: /data/raw/1617_E0.csv
+  season: "2016/17"
+  competition: E0
+- path: /data/raw/1718_E0.csv
+  season: "2017/18"
+  competition: E0
+- path: /data/raw/1819_E0.csv
+  season: "2018/19"
+  competition: E0
+- path: /data/raw/1920_E0.csv
+  season: "2019/20"
+  competition: E0
+- path: /data/raw/2021_E0.csv
+  season: "2020/21"
+  competition: E0
+- path: /data/raw/2122_E0.csv
+  season: "2021/22"
+  competition: E0
+- path: /data/raw/2223_E0.csv
+  season: "2022/23"
+  competition: E0
+- path: /data/raw/2324_E0.csv
+  season: "2023/24"
+  competition: E0
+- path: /data/raw/2425_E0.csv
+  season: "2024/25"
+  competition: E0
+- path: /data/raw/2526_E0.csv
+  season: "2025/26"
+  competition: E0

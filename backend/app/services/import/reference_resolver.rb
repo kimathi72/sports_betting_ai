@@ -254,10 +254,52 @@ module Import
         return Resolution.failure('home and away teams must differ')
       end
 
+      # An exact key match is authoritative. Only when it misses do we look for
+      # the same fixture that MOVED (see find_rescheduled_match).
+      identifier = find_identifier(:match, key)
+      return Resolution.success(existing_record(identifier, :match)) if identifier
+
+      rescheduled = find_rescheduled_match(row, competition: competition, season: season,
+                                                home_team: home_team, away_team: away_team)
+      if rescheduled
+        # The new kickoff arrives under a new provider key. Recording that key
+        # against the existing match keeps the fixture idempotent on its NEW
+        # key, while the old key stays in place so history remains auditable.
+        persist_identifier(:match, key, rescheduled)
+        return Resolution.success(rescheduled)
+      end
+
       mapped(:match, key) do
         build_match(row, competition: competition, season: season,
                          home_team: home_team, away_team: away_team)
       end
+    end
+
+    # Finds the stored fixture that this row is a RESCHEDULED version of.
+    #
+    # The provider publishes no match id, so its key embeds the kickoff. A moved
+    # fixture therefore arrives under a different key and would otherwise be
+    # created as a second match — double-counting it in training and evaluation.
+    #
+    # The match is deliberately conservative. Only a fixture that is:
+    #   - in the same season and competition,
+    #   - between exactly the same two clubs in the same home/away orientation,
+    #   - still without a result, and
+    #   - the ONLY such unresolved fixture in that season,
+    # is treated as a reschedule. If two unresolved meetings of the same pair
+    # exist, we cannot tell which one moved, so we create nothing rather than
+    # guess and merge the wrong fixture. Home/away swapping is a different match.
+    def find_rescheduled_match(row, competition:, season:, home_team:, away_team:)
+      return nil if row.status == Import::FootballDataCoUkAdapter::COMPLETED_STATUS
+
+      season.matches.where(home_team_id: home_team.id, away_team_id: away_team.id)
+                    .where.not(status: Import::FootballDataCoUkAdapter::COMPLETED_STATUS)
+                    .to_a
+            .then { |candidates| candidates.length == 1 ? candidates.first : nil }
+    end
+
+    def existing_record(identifier, kind)
+      target_of(identifier, kind)
     end
 
     # Resolves an entire row: competition, season, both teams, then the match.

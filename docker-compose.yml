@@ -37,6 +37,17 @@ services:
   ml:
     build:
       context: ./ml
+    environment:
+      # Model artifacts live outside the image so they survive a rebuild and can
+      # be produced by the training entry point. Paths match ml/app/model_store.py
+      # exactly: one file per market plus the metrics report.
+      ML_MODEL_PATH: /app/artifacts/model_1x2.joblib
+      ML_METRICS_PATH: /app/artifacts/metrics.json
+    volumes:
+      # Read-only for the API process: the service loads artifacts, it must not
+      # rewrite them mid-request. Training runs as a one-off container that
+      # writes to the same host directory.
+      - ./ml/artifacts:/app/artifacts
     ports:
       - "127.0.0.1:${ML_PORT:-8000}:8000"
     healthcheck:
@@ -65,6 +76,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-sports_ai}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_only}
       REDIS_URL: redis://redis:6379/0
+      # Rails calls the ML service by its Compose service name, never
+      # localhost: inside a container localhost is the container itself.
+      ML_SERVICE_URL: ${ML_SERVICE_URL:-http://ml:8000}
       RUN_MIGRATIONS: "true"
     ports:
       - "127.0.0.1:${WEB_PORT:-3000}:3000"
@@ -74,6 +88,11 @@ services:
       # the backend and the future data pipeline. Mounted read-only: the app
       # reads fixtures but must never write back into the source tree.
       - ./data:/data:ro
+      # Only the raw-download directory is writable. It is a separate mount
+      # nested inside the read-only parent, so downloads persist to the host's
+      # data/raw while data/fixtures stays read-only. Raw data is git-ignored
+      # (data/raw/* with .gitkeep preserved), so this cannot leak into history.
+      - ./data/raw:/data/raw
     depends_on:
       postgres:
         condition: service_healthy
@@ -104,6 +123,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-sports_ai}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_only}
       REDIS_URL: redis://redis:6379/0
+      # Rails calls the ML service by its Compose service name, never
+      # localhost: inside a container localhost is the container itself.
+      ML_SERVICE_URL: ${ML_SERVICE_URL:-http://ml:8000}
       RUN_MIGRATIONS: "false"
     volumes:
       - ./backend:/app
@@ -111,6 +133,9 @@ services:
       # the data directory must be visible to it too. Read-only for the same
       # reason: imports read fixtures and never write back into the source tree.
       - ./data:/data:ro
+      # The worker reads downloaded raw files, so the same narrowly-writable
+      # raw mount as `web` is required; fixtures stay read-only.
+      - ./data/raw:/data/raw
     depends_on:
       postgres:
         condition: service_healthy

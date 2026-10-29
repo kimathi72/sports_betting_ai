@@ -68,4 +68,16 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Rails' DNS-rebinding guard allow-lists only localhost and raw IPs by default,
+  # so a request from another Compose container addressed to `http://web:3000`
+  # returned 403 and the ML service could not read training data at all.
+  #
+  # The allowlist stays narrow and explicit: the Compose service names this
+  # project actually uses, plus anything an operator opts into via
+  # INTERNAL_HOSTS (comma-separated). It is development-only configuration and
+  # does not widen what a browser on the internet can reach.
+  config.hosts << 'web'
+  config.hosts << 'backend'
+  config.hosts.concat(ENV.fetch('INTERNAL_HOSTS', '').split(',').map(&:strip).reject(&:empty?))
 end

@@ -108,8 +108,16 @@ RSpec.describe Import::FootballDataCoUkAdapter do
   describe 'required columns' do
     it 'declares the columns it needs from the file' do
       expect(described_class::REQUIRED_COLUMNS).to contain_exactly(
-        'Div', 'Date', 'Time', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR'
+        'Div', 'Date', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR'
       )
+    end
+
+    # Time is optional: seeking before 2019/20 publish no kickoff time, and
+    # rejecting those files would make real history permanently unreachable.
+    # See optional_time_column_spec.rb for the behaviour.
+    it 'treats Time as optional' do
+      expect(described_class::OPTIONAL_COLUMNS).to contain_exactly('Time')
+      expect(described_class::REQUIRED_COLUMNS).not_to include('Time')
     end
   end
 
@@ -268,11 +276,15 @@ RSpec.describe Import::FootballDataCoUkAdapter do
       }
     end
 
-    it 'rejects a two-digit year instead of reading it as year 0024' do
+    it 'never reads a two-digit year as year 0024' do
+      # The 2016/17 file really does write dd/mm/yy, so the shape is accepted —
+      # but it is expanded to 20xx explicitly, never handed to strptime (which
+      # would read "24" as the year 24 AD). See two_digit_year_spec.rb.
       result = described_class.parse(valid_row.merge('Date' => '16/08/24'))
 
-      expect(result).not_to be_success
-      expect(result.error).to match(/date|year/i)
+      expect(result).to be_success
+      expect(result.row.kickoff_at.year).to eq(2024)
+      expect(result.row.kickoff_at.year).not_to eq(24)
     end
 
     it 'rejects an impossible calendar date' do

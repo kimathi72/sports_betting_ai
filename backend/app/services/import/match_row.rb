@@ -24,6 +24,10 @@ module Import
     :status,
     :home_score,
     :away_score,
+    # Whether the source published a kickoff TIME. Older seasons publish only a
+    # date; `kickoff_at` then carries a documented placeholder, and downstream
+    # code must not treat it as a real kickoff.
+    :time_known,
     keyword_init: true,
   ) do
     MINIMAL_ATTRIBUTES = %i[provider provider_key competition_code home_team_name

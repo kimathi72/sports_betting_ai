@@ -1,0 +1,495 @@
+{
+  "generated_at": "2026-10-29T12:51:29.100948+00:00",
+  "evaluation_method": "chronological three-way split; final test held out from selection; baselines fit on train labels only; no shuffling",
+  "metric_definitions": {
+    "log_loss": "mean negative log probability of the true class (multiclass)",
+    "brier_score": "mean over rows of sum over classes of (p - y)^2; unscaled sum-variant; range [0, 2] for K classes; comparable only within the same class list",
+    "log_loss_delta_vs_baseline": "model log loss minus baseline log loss on the same partition; negative is better than the baseline"
+  },
+  "market": "over_under_2.5",
+  "split": {
+    "n_train": 2559,
+    "n_validation": 849,
+    "n_test": 852,
+    "train_range": [
+      "2015-08-08T12:00:00Z",
+      "2022-03-13T14:00:00Z"
+    ],
+    "validation_range": [
+      "2022-03-13T16:30:00Z",
+      "2024-05-14T20:00:00Z"
+    ],
+    "test_range": [
+      "2024-05-15T19:45:00Z",
+      "2026-10-25T16:30:00Z"
+    ]
+  },
+  "class_distribution_test": {
+    "Over": 474,
+    "Under": 378
+  },
+  "models": [
+    {
+      "name": "majority",
+      "metrics": {
+        "validation": {
+          "n": 849,
+          "accuracy": 0.5830388692579506,
+          "log_loss": 14.401327260068765,
+          "brier_score": 0.833922261484099,
+          "calibration": [
+            {
+              "bin": "0.90-1.00",
+              "n": 849,
+              "mean_confidence": 1.0,
+              "accuracy": 0.5830388692579506
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 13.71482627652688,
+            "ci_low": 12.57880776388317,
+            "ci_high": 14.891416878907867,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 849
+          }
+        },
+        "test": {
+          "n": 852,
+          "accuracy": 0.5563380281690141,
+          "log_loss": 15.323541639995586,
+          "brier_score": 0.8873239436619719,
+          "calibration": [
+            {
+              "bin": "0.90-1.00",
+              "n": 852,
+              "mean_confidence": 1.0,
+              "accuracy": 0.5563380281690141
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 14.634555550219059,
+            "ci_low": 13.462107872494343,
+            "ci_high": 15.848443188966797,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 852
+          }
+        }
+      },
+      "notes": ""
+    },
+    {
+      "name": "frequency",
+      "metrics": {
+        "validation": {
+          "n": 849,
+          "accuracy": 0.5830388692579506,
+          "log_loss": 0.6865009835418908,
+          "brier_score": 0.49335820642824185,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 849,
+              "mean_confidence": 0.5232512700273544,
+              "accuracy": 0.5830388692579506
+            }
+          ]
+        },
+        "test": {
+          "n": 852,
+          "accuracy": 0.5563380281690141,
+          "log_loss": 0.6889860897765306,
+          "brier_score": 0.49584152029270556,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 852,
+              "mean_confidence": 0.5232512700273544,
+              "accuracy": 0.5563380281690141
+            }
+          ]
+        }
+      },
+      "notes": ""
+    },
+    {
+      "name": "logistic_regression",
+      "metrics": {
+        "validation": {
+          "n": 849,
+          "accuracy": 0.5441696113074205,
+          "log_loss": 0.6843672675822614,
+          "brier_score": 0.4912608496025275,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 773,
+              "mean_confidence": 0.5429331321845365,
+              "accuracy": 0.535575679172057
+            },
+            {
+              "bin": "0.60-0.70",
+              "n": 76,
+              "mean_confidence": 0.6185447800279684,
+              "accuracy": 0.631578947368421
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": -0.0021337159596293777,
+            "ci_low": -0.008127460935034955,
+            "ci_high": 0.004438629307194597,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.73,
+            "n": 849
+          }
+        },
+        "test": {
+          "n": 852,
+          "accuracy": 0.5563380281690141,
+          "log_loss": 0.687015643493786,
+          "brier_score": 0.4938622076088221,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 792,
+              "mean_confidence": 0.54220195645472,
+              "accuracy": 0.5517676767676768
+            },
+            {
+              "bin": "0.60-0.70",
+              "n": 60,
+              "mean_confidence": 0.6176857939585629,
+              "accuracy": 0.6166666666666667
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": -0.001970446282744661,
+            "ci_low": -0.007780226413130089,
+            "ci_high": 0.0040255575470448685,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.735,
+            "n": 852
+          }
+        }
+      },
+      "notes": ""
+    },
+    {
+      "name": "hist_gradient_boosting",
+      "metrics": {
+        "validation": {
+          "n": 849,
+          "accuracy": 0.4994110718492344,
+          "log_loss": 0.8115028648520138,
+          "brier_score": 0.5904711213375221,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 258,
+              "mean_confidence": 0.5486382027201121,
+              "accuracy": 0.5271317829457365
+            },
+            {
+              "bin": "0.60-0.70",
+              "n": 243,
+              "mean_confidence": 0.6503706746308613,
+              "accuracy": 0.4691358024691358
+            },
+            {
+              "bin": "0.70-0.80",
+              "n": 201,
+              "mean_confidence": 0.7461680164609906,
+              "accuracy": 0.472636815920398
+            },
+            {
+              "bin": "0.80-0.90",
+              "n": 110,
+              "mean_confidence": 0.8426432794825734,
+              "accuracy": 0.5454545454545454
+            },
+            {
+              "bin": "0.90-1.00",
+              "n": 37,
+              "mean_confidence": 0.9264290224524591,
+              "accuracy": 0.5135135135135135
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 0.12500188131012302,
+            "ci_low": 0.09002755438838772,
+            "ci_high": 0.15848367376300068,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 849
+          }
+        },
+        "test": {
+          "n": 852,
+          "accuracy": 0.5105633802816901,
+          "log_loss": 0.7805292512158191,
+          "brier_score": 0.564789864315172,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 252,
+              "mean_confidence": 0.5471084586696728,
+              "accuracy": 0.46825396825396826
+            },
+            {
+              "bin": "0.60-0.70",
+              "n": 250,
+              "mean_confidence": 0.6502510136325637,
+              "accuracy": 0.476
+            },
+            {
+              "bin": "0.70-0.80",
+              "n": 197,
+              "mean_confidence": 0.7487639002269673,
+              "accuracy": 0.5532994923857868
+            },
+            {
+              "bin": "0.80-0.90",
+              "n": 123,
+              "mean_confidence": 0.8483977156781509,
+              "accuracy": 0.5772357723577236
+            },
+            {
+              "bin": "0.90-1.00",
+              "n": 30,
+              "mean_confidence": 0.931668642932818,
+              "accuracy": 0.6
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 0.09154316143928837,
+            "ci_low": 0.0565369155410501,
+            "ci_high": 0.12727461735875548,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 852
+          }
+        }
+      },
+      "notes": ""
+    },
+    {
+      "name": "poisson_goals",
+      "metrics": {
+        "validation": {
+          "n": 849,
+          "accuracy": 0.5276796230859835,
+          "log_loss": 0.750428310327602,
+          "brier_score": 0.5396522742859851,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 240,
+              "mean_confidence": 0.5486195775647978,
+              "accuracy": 0.45
+            },
+            {
+              "bin": "0.60-0.70",
+              "n": 282,
+              "mean_confidence": 0.6489598089873844,
+              "accuracy": 0.5070921985815603
+            },
+            {
+              "bin": "0.70-0.80",
+              "n": 191,
+              "mean_confidence": 0.7544271886602683,
+              "accuracy": 0.5549738219895288
+            },
+            {
+              "bin": "0.80-0.90",
+              "n": 117,
+              "mean_confidence": 0.842136868299245,
+              "accuracy": 0.7008547008547008
+            },
+            {
+              "bin": "0.90-1.00",
+              "n": 19,
+              "mean_confidence": 0.9325358552901847,
+              "accuracy": 0.47368421052631576
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 0.06392732678571116,
+            "ci_low": 0.03080785409496736,
+            "ci_high": 0.09863215090027469,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 849
+          }
+        },
+        "test": {
+          "n": 852,
+          "accuracy": 0.5046948356807511,
+          "log_loss": 0.7635637688230791,
+          "brier_score": 0.5566451395058889,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 326,
+              "mean_confidence": 0.545856618559868,
+              "accuracy": 0.49079754601226994
+            },
+            {
+              "bin": "0.60-0.70",
+              "n": 283,
+              "mean_confidence": 0.6455058436870867,
+              "accuracy": 0.5123674911660777
+            },
+            {
+              "bin": "0.70-0.80",
+              "n": 167,
+              "mean_confidence": 0.7520225505146988,
+              "accuracy": 0.5149700598802395
+            },
+            {
+              "bin": "0.80-0.90",
+              "n": 67,
+              "mean_confidence": 0.8390952435232445,
+              "accuracy": 0.5223880597014925
+            },
+            {
+              "bin": "0.90-1.00",
+              "n": 9,
+              "mean_confidence": 0.9402504086120348,
+              "accuracy": 0.4444444444444444
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 0.07457767904654847,
+            "ci_low": 0.04642197684969078,
+            "ci_high": 0.10258118047472684,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 852
+          }
+        }
+      },
+      "notes": "POISSON PROXY, not a fitted Poisson regression: strengths come from the row's own last-5 form features scaled to train goals averages. Internally consistent across markets; do not read it as a calibrated goal model."
+    },
+    {
+      "name": "elo",
+      "metrics": {
+        "validation": {
+          "n": 849,
+          "accuracy": 0.5830388692579506,
+          "log_loss": 0.6865009835418908,
+          "brier_score": 0.49335820642824185,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 849,
+              "mean_confidence": 0.5232512700273544,
+              "accuracy": 0.5830388692579506
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.0,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 849
+          }
+        },
+        "test": {
+          "n": 852,
+          "accuracy": 0.5563380281690141,
+          "log_loss": 0.6889860897765306,
+          "brier_score": 0.49584152029270556,
+          "calibration": [
+            {
+              "bin": "0.50-0.60",
+              "n": 852,
+              "mean_confidence": 0.5232512700273544,
+              "accuracy": 0.5563380281690141
+            }
+          ],
+          "log_loss_delta_vs_baseline": {
+            "observed_delta": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.0,
+            "confidence": 0.95,
+            "resamples": 2000,
+            "seed": 20240529,
+            "probability_better": 0.0,
+            "n": 852
+          }
+        }
+      },
+      "notes": "fixed-parameter Elo (K=20, home advantage=60 rating points, draw rate=0.25, no margin-of-victory); ratings replayed over train rows only, same-kickoff matches grouped into a round. Over/Under and BTTS are NOT Elo outputs: this row uses the train frequency as a documented placeholder. Nothing was tuned, so it cannot have been fitted to validation."
+    }
+  ],
+  "environment": {
+    "python": "3.12.16",
+    "numpy": "1.26.4",
+    "scipy": "1.17.1",
+    "scikit_learn": "1.9.1",
+    "feature_count": 17
+  },
+  "selected_by_validation_log_loss": "logistic_regression",
+  "test_metrics_of_selected": {
+    "n": 852,
+    "accuracy": 0.5563380281690141,
+    "log_loss": 0.687015643493786,
+    "brier_score": 0.4938622076088221,
+    "calibration": [
+      {
+        "bin": "0.50-0.60",
+        "n": 792,
+        "mean_confidence": 0.54220195645472,
+        "accuracy": 0.5517676767676768
+      },
+      {
+        "bin": "0.60-0.70",
+        "n": 60,
+        "mean_confidence": 0.6176857939585629,
+        "accuracy": 0.6166666666666667
+      }
+    ],
+    "log_loss_delta_vs_baseline": {
+      "observed_delta": -0.001970446282744661,
+      "ci_low": -0.007780226413130089,
+      "ci_high": 0.0040255575470448685,
+      "confidence": 0.95,
+      "resamples": 2000,
+      "seed": 20240529,
+      "probability_better": 0.735,
+      "n": 852
+    }
+  },
+  "test_partition_status": "exploratory",
+  "test_partition_explanation": "The test partition was already scored by an earlier version of this harness before Elo, the candidate set and the metric reporting were revised. It is therefore NOT an untouched final holdout: every number here is exploratory. Model selection uses validation log loss only, which this revision did not consult. A defensible final estimate requires a fresh, as-yet unscored period once more seasons are imported.",
+  "validation_ranking": [
+    "logistic_regression",
+    "frequency",
+    "elo",
+    "poisson_goals",
+    "hist_gradient_boosting",
+    "majority"
+  ],
+  "validation_log_loss_of_selected": 0.6843672675822614,
+  "selection_rule": "lowest validation log loss"
+}

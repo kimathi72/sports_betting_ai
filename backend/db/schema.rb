@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_15_090400) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,32 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_090400) do
     t.check_constraint "status::text = ANY (ARRAY['scheduled'::character varying, 'postponed'::character varying, 'cancelled'::character varying, 'in_progress'::character varying, 'completed'::character varying]::text[])", name: "matches_status_supported"
   end
 
+  create_table "predictions", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.string "model_version", null: false
+    t.decimal "home_probability", precision: 6, scale: 5, null: false
+    t.decimal "draw_probability", precision: 6, scale: 5, null: false
+    t.decimal "away_probability", precision: 6, scale: 5, null: false
+    t.datetime "generated_at", null: false
+    t.jsonb "features", default: {}, null: false
+    t.jsonb "model_metadata", default: {}, null: false
+    t.datetime "superseded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "market", default: "1x2", null: false
+    t.jsonb "outcomes", default: {}, null: false
+    t.index ["match_id", "generated_at"], name: "index_predictions_on_match_and_generated_at"
+    t.index ["match_id", "market", "generated_at"], name: "index_predictions_on_match_market_generated_at"
+    t.index ["match_id", "market"], name: "index_predictions_current_per_market", unique: true, where: "(superseded_at IS NULL)"
+    t.index ["match_id", "model_version"], name: "index_predictions_on_match_and_model_version"
+    t.index ["match_id"], name: "index_predictions_on_match_id"
+    t.check_constraint "(home_probability + draw_probability + away_probability) = 1::numeric", name: "predictions_probabilities_sum_to_one"
+    t.check_constraint "home_probability <= 1::numeric AND draw_probability <= 1::numeric AND away_probability <= 1::numeric", name: "predictions_probabilities_at_most_one"
+    t.check_constraint "home_probability >= 0::numeric AND draw_probability >= 0::numeric AND away_probability >= 0::numeric", name: "predictions_probabilities_non_negative"
+    t.check_constraint "jsonb_typeof(outcomes) = 'object'::text", name: "predictions_outcomes_is_object"
+    t.check_constraint "market::text = ANY (ARRAY['1x2'::character varying, 'double_chance'::character varying, 'over_under_2.5'::character varying, 'btts'::character varying]::text[])", name: "predictions_market_supported"
+  end
+
   create_table "seasons", force: :cascade do |t|
     t.bigint "competition_id", null: false
     t.string "name", null: false
@@ -79,6 +105,28 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_090400) do
     t.index ["competition_id", "name"], name: "index_seasons_on_competition_id_and_name", unique: true
     t.index ["competition_id"], name: "index_seasons_on_competition_id"
     t.check_constraint "start_date IS NULL OR end_date IS NULL OR start_date <= end_date", name: "seasons_start_before_end"
+  end
+
+  create_table "sync_runs", force: :cascade do |t|
+    t.string "kind", null: false
+    t.string "trigger", null: false
+    t.string "status", default: "running", null: false
+    t.datetime "started_at", null: false
+    t.datetime "finished_at"
+    t.integer "fetched", default: 0, null: false
+    t.integer "created", default: 0, null: false
+    t.integer "updated", default: 0, null: false
+    t.integer "skipped", default: 0, null: false
+    t.integer "rejected", default: 0, null: false
+    t.text "last_error"
+    t.jsonb "details", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kind", "started_at"], name: "index_sync_runs_on_kind_and_started_at"
+    t.index ["kind"], name: "index_sync_runs_one_running_per_kind", unique: true, where: "((status)::text = 'running'::text)"
+    t.index ["status", "started_at"], name: "index_sync_runs_on_status_and_started_at"
+    t.check_constraint "kind::text = ANY (ARRAY['fixtures'::character varying, 'results'::character varying]::text[])", name: "sync_runs_kind_check"
+    t.check_constraint "status::text = ANY (ARRAY['running'::character varying, 'succeeded'::character varying, 'failed'::character varying]::text[])", name: "sync_runs_status_check"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -98,5 +146,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_090400) do
   add_foreign_key "matches", "seasons"
   add_foreign_key "matches", "teams", column: "away_team_id"
   add_foreign_key "matches", "teams", column: "home_team_id"
+  add_foreign_key "predictions", "matches"
   add_foreign_key "seasons", "competitions"
 end

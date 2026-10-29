@@ -1,0 +1,6 @@
+- path: /data/fixtures/football_data_premier_league_sample.csv
+  season: 2024/25
+  competition: E0
+- path: /data/fixtures/football_data_premier_league_sample_mixed_statuses.csv
+  season: 2025/26
+  competition: E0

@@ -1,0 +1,46 @@
+# DEPRECATED — superseded by data/manifests/.
+#
+# This file still works, but it is a frozen snapshot of an early run and now
+# overlaps the maintained manifests without covering the current season. Use:
+#
+#   data/manifests/premier_league_history.yml  completed seasons (reproducible)
+#   data/manifests/premier_league_current.yml  the in-progress season
+#
+# It is kept only because it is an untracked artefact of the operator's original
+# run; nothing in the codebase references it. It intentionally lists 11 seasons
+# and omits 2026/27 — do not add entries here. See manifest_catalogue_spec.rb for
+# the validated arrangement.
+
+- path: /data/raw/1516_E0.csv
+  season: 2015/16
+  competition: E0
+- path: /data/raw/1617_E0.csv
+  season: 2016/17
+  competition: E0
+- path: /data/raw/1718_E0.csv
+  season: 2017/18
+  competition: E0
+- path: /data/raw/1819_E0.csv
+  season: 2018/19
+  competition: E0
+- path: /data/raw/1920_E0.csv
+  season: 2019/20
+  competition: E0
+- path: /data/raw/2021_E0.csv
+  season: 2020/21
+  competition: E0
+- path: /data/raw/2122_E0.csv
+  season: 2021/22
+  competition: E0
+- path: /data/raw/2223_E0.csv
+  season: 2022/23
+  competition: E0
+- path: /data/raw/2324_E0.csv
+  season: 2023/24
+  competition: E0
+- path: /data/raw/2425_E0.csv
+  season: 2024/25
+  competition: E0
+- path: /data/raw/2526_E0.csv
+  season: 2025/26
+  competition: E0

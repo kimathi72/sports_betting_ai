@@ -4,4 +4,7 @@
   # Data imports. Kept separate from `default` so a long import cannot starve
   # short operational jobs, and so the worker can be scaled independently.
   - imports
+  # Prediction requests. Separate from imports so a slow ML service cannot delay
+  # a data import, and so the two can be scaled independently.
+  - predictions
   - mailers

@@ -1,0 +1,37 @@
+# Premier League — CURRENT (in-progress) season manifest.
+#
+# This file is deliberately separate from premier_league_history.yml:
+#
+#   premier_league_history.yml  completed seasons; the reproducible backfill
+#   premier_league_current.yml  the season currently being played (this file)
+#
+# The current season changes every week. Keeping it out of the history manifest
+# means a historical backfill stays reproducible: re-running it cannot pick up
+# new fixtures that appeared since the last report. It also means the same
+# competition+season can never be claimed twice, so an import cannot be asked to
+# process one file as two different seasons.
+#
+# IMPORTING THIS FILE IS SAFE AND EXPECTED TO CHANGE:
+#   - fixtures the source has not yet published simply do not exist here
+#   - a fixture present without a result is stored as `scheduled`
+#   - a published result is stored once and updated in place if it is later
+#     corrected by the provider; a completed result is never overwritten by a
+#     conflicting one (that fails the batch instead)
+#
+# Download it first:
+#
+#   docker compose exec -T web bundle exec rake "import:download[2026/27]"
+#
+# Then import:
+#
+#   docker compose exec -T web \
+#     bundle exec rake "import:historical[/data/manifests/premier_league_current.yml,2026/27]"
+#
+# When this season is complete, move its entry into premier_league_history.yml
+# (update the expected range in manifest_catalogue_spec.rb at the same time).
+#
+# Re-run any time: the importer is idempotent, so unchanged fixtures are skipped.
+
+- path: /data/raw/2627_E0.csv
+  season: "2026/27"
+  competition: E0

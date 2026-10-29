@@ -1,0 +1,90 @@
+{
+  "frozen_at": "2026-10-29T13:20:43.282855+00:00",
+  "frozen_by": "ml.app.evaluate_markets --freeze",
+  "protocol": {
+    "split": {
+      "order": "kickoff_at, then match_id",
+      "validation_fraction": 0.2,
+      "test_fraction": 0.2,
+      "simultaneous_kickoffs_kept_together": true
+    },
+    "selection_rule": "lowest validation log loss",
+    "baseline_for_deltas": "frequency",
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 20240529,
+      "paired": true,
+      "confidence": 0.95
+    },
+    "elo": {
+      "initial_rating": 1500.0,
+      "k": 20.0,
+      "home_advantage": 60.0,
+      "draw_rate": 0.25,
+      "margin_of_victory": "none"
+    },
+    "feature_schema": [
+      "home_last5_points",
+      "home_last5_goals_for",
+      "home_last5_goals_against",
+      "home_last5_wins",
+      "home_last5_draws",
+      "home_last5_losses",
+      "home_matches_played",
+      "away_last5_points",
+      "away_last5_goals_for",
+      "away_last5_goals_against",
+      "away_last5_wins",
+      "away_last5_draws",
+      "away_last5_losses",
+      "away_matches_played",
+      "h2h_home_wins",
+      "h2h_draws",
+      "h2h_away_wins"
+    ],
+    "candidates": {
+      "1x2": [
+        "majority",
+        "frequency",
+        "logistic_regression",
+        "hist_gradient_boosting",
+        "poisson_goals",
+        "elo"
+      ],
+      "over_under_2.5": [
+        "majority",
+        "frequency",
+        "logistic_regression",
+        "hist_gradient_boosting",
+        "poisson_goals",
+        "elo"
+      ],
+      "btts": [
+        "majority",
+        "frequency",
+        "logistic_regression",
+        "hist_gradient_boosting",
+        "poisson_goals",
+        "elo"
+      ]
+    },
+    "class_orders": {
+      "1x2": [
+        "H",
+        "D",
+        "A"
+      ],
+      "over_under_2.5": [
+        "Over",
+        "Under"
+      ],
+      "btts": [
+        "Yes",
+        "No"
+      ]
+    }
+  },
+  "digest": "2779ec88a8175fcdc6a92aa6745b0c56e47fb8e7f1eb58a47f72275ad8695a96",
+  "holdout_status": "exploratory",
+  "contamination": "The test partition was already scored by an earlier version of this harness before Elo, the candidate set and the metric reporting were revised. It is therefore NOT an untouched final holdout: every number here is exploratory. Model selection uses validation log loss only, which this revision did not consult. A defensible final estimate requires a fresh, as-yet unscored period once more seasons are imported."
+}

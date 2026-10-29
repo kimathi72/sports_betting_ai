@@ -14,6 +14,12 @@ gem "puma", ">= 5.0"
 # Background job processing and Redis client [https://github.com/sidekiq/sidekiq]
 gem "redis", ">= 5.0", "< 6.0"
 gem "sidekiq", "~> 7.3"
+# Cron-style recurring jobs inside the Sidekiq worker process. Chosen over a
+# separate scheduler container or an OS cron because the schedule then lives in
+# version control, needs no second process to be kept alive, and uses the same
+# Redis that already backs the queue. Pinned to the 2.x line, which targets
+# Sidekiq 7; Sidekiq 7's own repeating-job removal is why a gem is needed.
+gem "sidekiq-cron", "~> 2.1"
 # connection_pool 3.x changed the signature of `pop`, which Sidekiq 7.3.x still
 # calls with one argument. Pin to the 2.x line until Sidekiq supports 3.x.
 gem "connection_pool", "~> 2.4"

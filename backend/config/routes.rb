@@ -17,6 +17,20 @@ Rails.application.routes.draw do
       resources :competitions, only: [:index]
       resources :teams, only: [:index]
       resources :matches, only: [:index]
+      # Seasons must be discoverable by a client. The ML training flow used to
+      # hardcode database ids, which are not stable across a re-import.
+      resources :seasons, only: [:index]
+
+      # Stored 1X2 predictions. Read-only: inference is requested through the
+      # background job (PredictMatchJob), never by a GET, so a client refreshing
+      # the app cannot generate model work.
+      # index/show read stored predictions; create REQUESTS one. Inference is
+      # orchestrated by Predictions::MarketPredictor, never computed in the
+      # controller.
+      resources :predictions, only: [:index, :show, :create]
+
+      # Which model versions have produced predictions, and how recently.
+      get "model_status", to: "model_status#show"
     end
   end
 

@@ -15,7 +15,19 @@ module Import
 
     # Columns the adapter needs. Passed to CsvReader so a file missing any of
     # them is rejected up front rather than producing silently wrong data.
-    REQUIRED_COLUMNS = %w[Div Date Time HomeTeam AwayTeam FTHG FTAG FTR].freeze
+    REQUIRED_COLUMNS = %w[Div Date HomeTeam AwayTeam FTHG FTAG FTR].freeze
+
+    # Present in modern files, absent from older ones. Rejecting the older files
+    # would make real history unreachable; inventing a kickoff for them would
+    # fabricate data, so the row records `time_known: false` instead.
+    OPTIONAL_COLUMNS = %w[Time].freeze
+
+    # When a file has no Time column, fixtures are anchored at this UTC hour.
+    # Midday is used deliberately: midnight would sit exactly on the date
+    # boundary, so a timezone conversion at presentation could shift a fixture
+    # into the previous day. Flagging the row via `time_known` keeps the
+    # placeholder from being mistaken for a real kickoff.
+    UNDATED_TIME_HOUR = 12
 
     # football-data.co.uk writes dates as dd/mm/yyyy.
     DATE_FORMAT = "%d/%m/%Y".freeze
@@ -24,6 +36,18 @@ module Import
     # "16/08/24" as the year 24 AD, which is almost never what an operator meant,
     # so the shape is checked before strptime sees it.
     DATE_PATTERN = %r{\A(\d{1,2})/(\d{1,2})/(\d{4})\z}.freeze
+
+    # The 2016/17 file is the one season that writes dates as dd/mm/yy. Kept as a
+    # separate, narrower pattern so the two-digit form can never be confused with
+    # the four-digit one, and expanded explicitly rather than by strptime.
+    TWO_DIGIT_YEAR_PATTERN = %r{\A(\d{1,2})/(\d{1,2})/(\d{2})\z}.freeze
+
+    # The first season the platform supports (2016/17). Used ONLY as a sanity
+    # floor for TWO-DIGIT year expansion: an expanded year before this is far more
+    # likely to be a misread than real data. It deliberately does NOT restrict
+    # explicit four-digit years — the source's older files legitimately contain
+    # dates such as 08/08/2015.
+    EARLIEST_SEASON_YEAR = 2016
 
     # FTR is the full-time result from the home team's perspective. It is the
     # single field that says whether a row asserts a finished result. The policy:
@@ -95,10 +119,15 @@ module Import
       result_error(row)
     end
 
+    # The date is required. The time is required only when the file publishes a
+    # Time column at all: seasons before 2019/20 do not, and the source's silence
+    # is not the same as a malformed value.
     def timestamp_error(row)
       date = parse_date(row["Date"])
       return "date is missing" if date.nil?
       return "date is not a valid dd/mm/yyyy date: #{row["Date"]}" if date == :invalid
+
+      return nil unless row.key?("Time")
 
       time = parse_time(row["Time"])
       return "kickoff time (Time) is missing" if time.nil?
@@ -159,7 +188,16 @@ module Import
         status: status,
         home_score: completed ? Integer(row["FTHG"]) : nil,
         away_score: completed ? Integer(row["FTAG"]) : nil,
+        time_known: time_known?(row)
       )
+    end
+
+    # Whether the source actually published a kickoff time for this row. False
+    # for older seasons, where `kickoff_at` carries a documented placeholder.
+    def time_known?(row)
+      !parse_time(row["Time"]).nil?
+    rescue Date::Error
+      false
     end
 
     # The provider publishes no match id, so this key IS the match identity and
@@ -178,7 +216,11 @@ module Import
       [
         normalize_text(row["Div"]),
         kickoff.strftime("%Y-%m-%d"),
-        kickoff.strftime("%H:%M"),
+        # When no time was published, the key must NOT embed the placeholder: a
+        # later file that adds kickoff times would otherwise look like a
+        # different fixture and duplicate the match. An empty segment keeps the
+        # identity "this fixture on this date" stable across both file shapes.
+        time_known?(row) ? kickoff.strftime("%H:%M") : "",
         Team.normalize(row["HomeTeam"]),
         Team.normalize(row["AwayTeam"]),
       ].join("|")
@@ -189,21 +231,61 @@ module Import
     # timezone handling at presentation, so the instant is interpreted as UTC here.
     def kickoff_at(row)
       date = parse_date(row["Date"])
-      hour, minute = parse_time(row["Time"])
+      hour, minute = parse_time(row["Time"]) || [UNDATED_TIME_HOUR, 0]
 
       Time.utc(date.year, date.month, date.day, hour, minute)
     end
 
-    # Returns a Date, nil when absent, or :invalid when the text is not a strict
-    # dd/mm/yyyy date with a four-digit year.
+    # Returns a Date, nil when absent, or :invalid when the text is not a
+    # dd/mm/yyyy date. Both `dd/mm/yyyy` and the one historical season's
+    # `dd/mm/yy` are accepted; see TWO_DIGIT_YEAR_PATTERN for why a two-digit
+    # year is expanded explicitly rather than handed to strptime.
     def parse_date(value)
       text = value.to_s.strip
       return nil if text.empty?
-      return :invalid unless text.match?(DATE_PATTERN)
 
-      Date.strptime(text, DATE_FORMAT)
-    rescue Date::Error
+      if text.match?(DATE_PATTERN)
+        parse_date_parts(text)
+      elsif (match = text.match(TWO_DIGIT_YEAR_PATTERN))
+        # `\d{4}\z` above already claimed four-digit years, so this branch is the
+        # two-digit case only. The 2000s expansion is a rule, not a guess.
+        parse_date_parts(text, year: expand_two_digit_year(match[3].to_i))
+      else
+        :invalid
+      end
+    end
+
+    # Parses dd/mm/yyyy. The `year:` argument is only supplied by the two-digit
+    # path, which has already expanded the year; an explicit four-digit year is
+    # taken at face value.
+    #
+    # Day-first order is the source's documented format and is enforced here:
+    # "04/05/2016" is 4 May, never 5 April.
+    def parse_date_parts(text, year: nil)
+      if year
+        day, month = text.split('/').map { |part| Integer(part, 10) }
+        return :invalid unless Date.valid_date?(year, month, day)
+
+        # The floor applies ONLY to an expanded two-digit year. It exists to catch
+        # a wrong expansion ("13/08/15" -> 2015), not to limit which seasons the
+        # platform may hold: a file written as 08/08/2015 is real history and must
+        # be accepted.
+        return :invalid if year < EARLIEST_SEASON_YEAR
+
+        Date.new(year, month, day)
+      else
+        Date.strptime(text, DATE_FORMAT)
+      end
+    rescue Date::Error, ArgumentError
       :invalid
+    end
+
+    # Two-digit years are interpreted as 20xx. The platform's first supported
+    # season is 2016/17 and every season since is in the 2000s, so 16 means 2016
+    # — but the result is validated against EARLIEST_SEASON_YEAR afterwards, so
+    # an implausible value is rejected rather than guessed into the corpus.
+    def expand_two_digit_year(two_digits)
+      2000 + two_digits
     end
 
     # Returns [hour, minute], nil when absent, or :invalid when unparseable or
