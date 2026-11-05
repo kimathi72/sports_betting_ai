@@ -65,7 +65,10 @@ RSpec.describe Import::MatchImporter do
       expect(match.status).to eq('completed')
       expect(match.home_score).to eq(1)
       expect(match.away_score).to eq(0)
-      expect(match.competition.name).to include('E0')
+      # The stored name is the competition, not the import code (see
+      # CompetitionCatalogue): "football_data competition E0" is unreadable in the
+      # API and in the mobile app.
+      expect(match.competition.name).to eq('Premier League')
       expect(match.season.name).to eq('2024/25')
       expect(match.kickoff_at).to eq(Time.utc(2024, 8, 16, 12, 30))
     end

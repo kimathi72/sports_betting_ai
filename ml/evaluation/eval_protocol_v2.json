@@ -1,0 +1,18 @@
+{
+  "version": "v2.1",
+  "train_end": "2023-12-03",
+  "validation_end": "2025-02-26",
+  "feature_version": "v2",
+  "seeds": {
+    "split": 20240529,
+    "bootstrap": 20240529,
+    "model": 20240529
+  },
+  "class_orders": {
+    "1x2": ["H", "D", "A"],
+    "over_under_2.5": ["Over", "Under"],
+    "btts": ["Yes", "No"],
+    "double_chance": ["1X", "X2", "12"]
+  },
+  "notes": "Authoritative protocol for the published v2 generation. train_end is the last day INCLUDED in training (33,368 rows). validation_end is the last day included in model selection (5,006 rows). Everything after validation_end is holdout (5,889 rows), subject to the spent manifest also showing it is clean. Partition sizes verified against the published artifact metadata (split: train 28,364 / validation 5,006 / test 5,889), summing to 39,259 completed matches at freeze time."
+}

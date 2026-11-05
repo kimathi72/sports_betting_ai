@@ -88,7 +88,7 @@ RSpec.describe "GET /api/v1/predictions (markets)", type: :request do
     end
 
     it "rejects an unsupported market with a validation error" do
-      get "/api/v1/predictions", params: { market: "correct_score" }
+      get "/api/v1/predictions", params: { market: "teleportation" }
 
       expect(response).to have_http_status(:bad_request)
       expect(body["error"]).to match(/market/i)

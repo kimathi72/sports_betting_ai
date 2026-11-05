@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-11-03T00:00:00Z",
+  "protocol_version": "v2.1",
+  "source": "derived from ml/artifacts/model_1x2.joblib.meta.json (split: 28364/5006/5889), ml/artifacts/evaluation/protocol_freeze.json, and development database counts by kickoff date",
+  "notes": "This manifest records which observations have already influenced model development or evaluation. It is intentionally CONSERVATIVE: every completed match is marked spent for at least one purpose, because the whole completed set has been through earlier harness runs (protocol_freeze.json states the test partition was scored before the harness was revised). Therefore NOTHING is currently available as holdout evidence. Only matches completing after the freeze timestamp can become future holdout observations.",
+  "boundary_discrepancy": {
+    "artifact_split": {
+      "train": 28364,
+      "validation": 5006,
+      "test": 5889,
+      "total": 39259
+    },
+    "database_by_date": {
+      "train": 28397,
+      "validation": 4981,
+      "holdout": 5910,
+      "total": 39288
+    },
+    "explanation": "Database counts are taken by calendar date of kickoff; the artifact split was computed on timestamp boundaries in the training run. The two differ by 29 rows in total (39,259 vs 39,288) and redistribute ~26 rows across boundaries. This is a boundary-granularity artefact, not a data inconsistency. Recorded here rather than resolved by editing either file.",
+    "status": "documented"
+  },
+  "partitions": [
+    {
+      "name": "training",
+      "range": "2016-08-13..2023-12-03",
+      "rows": 28364,
+      "used_for": ["training"],
+      "holdout_eligible": false
+    },
+    {
+      "name": "model_selection",
+      "range": "2023-12-04..2025-02-26",
+      "rows": 5006,
+      "used_for": ["model_selection", "evaluation"],
+      "holdout_eligible": false
+    },
+    {
+      "name": "exploratory_test",
+      "range": "2025-02-27..2026-10-25",
+      "rows": 5889,
+      "used_for": ["evaluation"],
+      "holdout_eligible": false,
+      "reason": "Already scored by an earlier harness version before Elo, the candidate set and metric reporting were revised. Every metric from this window is EXPLORATORY."
+    },
+    {
+      "name": "future_holdout",
+      "range": "after 2026-11-03",
+      "rows": 0,
+      "used_for": [],
+      "holdout_eligible": true,
+      "reason": "No completed match currently falls here. This partition becomes usable only as matches complete after the freeze; it must never be scored until the protocol is frozen and recorded."
+    }
+  ],
+  "entries": [],
+  "entries_note": "Per-match entries are omitted deliberately. With 39,288 rows all spent, an explicit per-row list would be ~4MB of JSON that adds no information beyond the date ranges above. Instead the manifest declares DATE PARTITIONS, and eval_protocol.partition_for_row() maps any match to its partition by kickoff date. A per-row entry list should be generated when the future_holdout partition begins to fill, so that individual holdout matches can be tracked and locked.",
+  "consent_to_reuse_hol_dout": false
+}

@@ -45,7 +45,40 @@ module Import
 
     # A closed list on purpose: an unexpected code would silently fetch a
     # different competition's file.
-    SUPPORTED_DIVISIONS = %w[E0 E1 E2 E3 EC].freeze
+    #
+    # Verified against the live source on 2026-11-01 (every code returned HTTP
+    # 200 with a CSV body): E0/E1/E2/E3 are the English tiers, EC/SC0/SC1 are the
+    # Conference and the two Scottish tiers, SP/D/I/F/N/B/P/T are Spain, Germany,
+    # Italy, France, Netherlands, Belgium, Portugal and Turkey, and G1 is Greece.
+    # A competition is added here only after a real request confirmed it, exactly
+    # as with the ESPN league slugs.
+    SUPPORTED_DIVISIONS = %w[E0 E1 E2 E3 EC SC0 SC1 SP1 SP2 D1 D2 I1 I2 F1 F2 N1 B1 P1 T1 G1].freeze
+
+    # Country and competition name per division. Used only for reporting and for
+    # naming a canonical Competition when a division is imported for the first
+    # time; the recorded Competition is created by the importer, not here.
+    DIVISION_LABELS = {
+      'E0' => %w[England Premier\ League],
+      'E1' => %w[England Championship],
+      'E2' => %w[England League\ One],
+      'E3' => %w[England League\ Two],
+      'EC' => %w[England Conference],
+      'SC0' => %w[Scotland Premiership],
+      'SC1' => %w[Scotland Championship],
+      'SP1' => %w[Spain La\ Liga],
+      'SP2' => %w[Spain Segunda\ Division],
+      'D1' => %w[Germany Bundesliga],
+      'D2' => %w[Germany 2.\ Bundesliga],
+      'I1' => %w[Italy Serie\ A],
+      'I2' => %w[Italy Serie\ B],
+      'F1' => %w[France Ligue\ 1],
+      'F2' => %w[France Ligue\ 2],
+      'N1' => %w[Netherlands Eredivisie],
+      'B1' => %w[Belgium Pro\ League],
+      'P1' => %w[Portugal Primeira\ Liga],
+      'T1' => %w[Turkey Super\ Lig],
+      'G1' => %w[Greece Super\ League]
+    }.freeze
 
     # Columns a usable file must have. `Time` is NOT here: seasons before
     # 2019/20 do not publish kickoff times, and rejecting those files would make

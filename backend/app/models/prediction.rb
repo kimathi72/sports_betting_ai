@@ -29,15 +29,29 @@ class Prediction < ApplicationRecord
   OUTCOMES = %w[home draw away].freeze
 
   # The markets this platform predicts. Closed set, mirroring the ML service.
-  MARKETS = %w[1x2 over_under_2.5 btts double_chance].freeze
+  MARKETS = %w[1x2 over_under_2.5 btts double_chance correct_score].freeze
 
   # Canonical outcome keys per market. A distribution must contain exactly these.
+  #
+  # `correct_score` has no fixed key set: its outcomes are scorelines ("2-1") and
+  # the service returns the six most likely. Its validation therefore checks KEY
+  # SHAPE and that the truncated distribution does not exceed 1, rather than trying
+  # to enumerate every possible score.
   MARKET_OUTCOMES = {
     '1x2' => %w[H D A],
     'over_under_2.5' => %w[over under],
     'btts' => %w[yes no],
     'double_chance' => %w[1x x2 12]
   }.freeze
+
+  # A scoreline key: non-negative home and away goals, e.g. "2-1" or "0-0".
+  SCORELINE_PATTERN = /\A(\d{1,2})-(\d{1,2})\z/.freeze
+
+  # Markets projected from another distribution rather than fitted on their own.
+  # Double chance is the 1X2 sums; correct score is the top lines of the joint
+  # scoreline grid. Training either one independently would let it contradict the
+  # distribution it is supposed to be a view of.
+  DERIVED_MARKETS = %w[double_chance correct_score].freeze
 
   # Double chance is DERIVED, never predicted by its own classifier: it is a
   # linear combination of the 1X2 probabilities.
@@ -62,6 +76,13 @@ class Prediction < ApplicationRecord
   validate :match_must_not_be_completed
   validate :outcomes_must_match_market
   validate :double_chance_must_agree_with_1x2
+  validate :evidence_must_not_be_rewritten, on: :update
+
+  # `outcomes` is the canonical distribution. The legacy home/draw/away columns
+  # derive from it so a caller does not have to keep two representations in step;
+  # they were previously REQUIRED, which left `nil` and then failed numericality.
+  # An explicit value passed by the caller still wins (the producer sets them).
+  after_initialize :derive_legacy_probabilities
 
   scope :current, -> { where(superseded_at: nil) }
   scope :for_market, ->(market) { where(market: market) }
@@ -75,6 +96,17 @@ class Prediction < ApplicationRecord
   # the INSERT had already violated the index.
   before_create :supersede_previous
 
+  # Captures the fixture's kickoff as it stands when the prediction is issued.
+  #
+  # This is what makes rescheduling detectable: `generated_at` records WHEN the
+  # prediction was made, `issued_kickoff_at` records WHAT it was made about. If the
+  # match later moves, the pair no longer describe the same fixture and the
+  # prediction is not prospective evidence for the new date.
+  #
+  # Only set when absent, so a producer that already knows the kickoff (or a test
+  # reconstructing a row) keeps what it supplied.
+  before_create :capture_issued_kickoff
+
   def probabilities
     {
       "home" => home_probability.to_f,
@@ -85,7 +117,15 @@ class Prediction < ApplicationRecord
 
   # The outcome this prediction favours. Ties resolve deterministically by the
   # declared outcome order, so the answer never depends on hash ordering.
+  #
+  # ONLY 1X2 HAS ONE. The legacy home/draw/away columns are carried for every market
+  # so older consumers keep working, and a non-1X2 row leaves them at 0/0/1 — which
+  # made this accessor report a confident "away" for a correct-score row that says
+  # nothing about the result. The API serves this field, so the app displayed it.
+  # A market without three-way outcomes has no single favourite, and nil says so.
   def most_likely_outcome
+    return nil unless market == '1x2'
+
     OUTCOMES.max_by { |outcome| [public_send(:"#{outcome}_probability").to_f, -OUTCOMES.index(outcome)] }
   end
 
@@ -132,6 +172,42 @@ class Prediction < ApplicationRecord
 
   private
 
+  def derive_legacy_probabilities
+    return unless market == '1x2' && outcomes.is_a?(Hash)
+
+    self.home_probability = outcomes['H'] if home_probability.nil? && outcomes.key?('H')
+    self.draw_probability = outcomes['D'] if draw_probability.nil? && outcomes.key?('D')
+    self.away_probability = outcomes['A'] if away_probability.nil? && outcomes.key?('A')
+  end
+
+  def capture_issued_kickoff
+    self.issued_kickoff_at ||= match&.kickoff_at
+  end
+
+  # An issued prediction is evidence, so the parts that constitute the evidence are
+  # frozen once written.
+  #
+  # The schema previously allowed `outcomes` to be rewritten after the fact. A
+  # "prospective" prediction whose probabilities were edited after the result is
+  # indistinguishable from hindsight, which would defeat the purpose of recording
+  # issuance at all.
+  #
+  # Deliberately NOT frozen: `superseded_at` (the retirement mechanism needs it),
+  # `most_likely_outcome` and other derived/administrative columns.
+  IMMUTABLE_AFTER_ISSUE = %w[outcomes market match_id generated_at model_version
+                            model_freeze_digest issued_kickoff_at].freeze
+
+  def evidence_must_not_be_rewritten
+    changed = IMMUTABLE_AFTER_ISSUE.select { |attribute| will_save_change_to_attribute?(attribute) }
+    return if changed.empty?
+
+    changed.each do |attribute|
+      errors.add(attribute.to_sym,
+                 "cannot change after a prediction has been issued " \
+                 "(supersede it with a new prediction instead)")
+    end
+  end
+
   def round_probability(value)
     value.round(5)
   end
@@ -155,6 +231,8 @@ class Prediction < ApplicationRecord
   # [0, 1], and sum to 1. Anything else is a malformed provider response that must
   # not be persisted as if it were a real prediction.
   def outcomes_must_match_market
+    return validate_correct_score if market == 'correct_score'
+
     expected = MARKET_OUTCOMES[market]
     return if expected.nil?
 
@@ -198,6 +276,40 @@ class Prediction < ApplicationRecord
     return if (total - 1.0).abs <= SUM_TOLERANCE
 
     errors.add(:base, "market outcome probabilities must sum to 1 (got #{total.round(5)})")
+  end
+
+  # Correct score is the truncated top-lines view of the joint scoreline grid.
+  #
+  # Its outcomes are scorelines, so there is no fixed key list to compare against.
+  # What CAN be checked is what makes the row meaningful: every key is a valid
+  # "home-away" scoreline, every probability is in [0, 1], and the returned lines do
+  # not claim more than certainty. A sum well below 1 is correct and expected — the
+  # service returns only the most likely lines, and a full grid would be unreadable.
+  def validate_correct_score
+    distribution = normalised_outcomes
+    return if distribution.nil? || distribution.empty?
+
+    malformed = distribution.keys.reject { |key| SCORELINE_PATTERN.match?(key.to_s) }
+    if malformed.any?
+      errors.add(:outcomes, "contains invalid scorelines: #{malformed.join(', ')}")
+      return
+    end
+
+    values = distribution.transform_values { |v| v.is_a?(Numeric) ? v.to_f : nil }
+    if values.value?(nil)
+      errors.add(:outcomes, 'probabilities must be numbers')
+      return
+    end
+
+    unless values.values.all? { |v| v >= 0 && v <= 1 }
+      errors.add(:outcomes, 'probabilities must be between 0 and 1')
+      return
+    end
+
+    total = values.values.sum
+    return if total <= 1.0 + SUM_TOLERANCE
+
+    errors.add(:base, "correct score lines cannot sum to more than 1 (got #{total.round(5)})")
   end
 
   # Double chance is a projection of 1X2, so it must agree with the 1X2

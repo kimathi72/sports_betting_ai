@@ -92,7 +92,9 @@ RSpec.describe Import::CsvDownloader do
     end
 
     it 'rejects an unsupported division' do
-      expect { downloader(division: 'SP1').download_one(season: '2024/25') }
+      # SP1 is supported since the competition expansion; a code that exists
+      # nowhere in the source is the real "unsupported" case.
+      expect { downloader(division: 'ZZ9').download_one(season: '2024/25') }
         .to raise_error(Import::CsvDownloader::InvalidInput, /division/i)
     end
   end

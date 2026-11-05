@@ -1,0 +1,108 @@
+{
+  "model_version": "1x2-logreg-v2-20261101T120332Z",
+  "trained_at": "2026-11-01T12:03:32.009438+00:00",
+  "feature_names": [
+    "home_last5_points",
+    "home_last5_goals_for",
+    "home_last5_goals_against",
+    "home_last5_wins",
+    "home_last5_draws",
+    "home_last5_losses",
+    "home_matches_played",
+    "away_last5_points",
+    "away_last5_goals_for",
+    "away_last5_goals_against",
+    "away_last5_wins",
+    "away_last5_draws",
+    "away_last5_losses",
+    "away_matches_played",
+    "h2h_home_wins",
+    "h2h_draws",
+    "h2h_away_wins",
+    "home_last5_points_diff",
+    "home_last5_goals_for_diff",
+    "home_last5_goals_against_diff",
+    "away_last5_points_diff",
+    "away_last5_goals_for_diff",
+    "away_last5_goals_against_diff",
+    "home_elo",
+    "away_elo",
+    "elo_diff",
+    "home_home_only_points",
+    "away_away_only_points",
+    "home_rest_days",
+    "away_rest_days",
+    "rest_days_diff",
+    "home_matches_last_14_days",
+    "away_matches_last_14_days",
+    "congestion_diff",
+    "home_matched_before",
+    "away_matched_before",
+    "home_win_rate",
+    "away_win_rate",
+    "home_goal_rate",
+    "away_goal_rate",
+    "home_conceded_rate",
+    "away_conceded_rate",
+    "home_venue_win_rate",
+    "away_venue_win_rate",
+    "home_home_points",
+    "home_home_goals_for",
+    "home_home_goals_against",
+    "away_away_points",
+    "away_away_goals_for",
+    "away_away_goals_against",
+    "home_home_points_diff",
+    "away_away_points_diff",
+    "is_draw_competition_rate"
+  ],
+  "classes": [
+    "H",
+    "D",
+    "A"
+  ],
+  "market": "1x2",
+  "algorithm": "multinomial_logistic_regression",
+  "feature_version": "v2",
+  "feature_count": 53,
+  "trained_on": {
+    "rows": 33370,
+    "from": "2015-08-08",
+    "to": "2025-02-26",
+    "note": "train + validation; the test window was NOT used for fitting"
+  },
+  "split": {
+    "train": 28364,
+    "validation": 5006,
+    "test": 5889
+  },
+  "selection": "logistic_regression",
+  "evaluation": {
+    "candidate": "logistic_regression",
+    "metrics": {
+      "n": 5889,
+      "accuracy": 0.5078960774325013,
+      "log_loss": 0.998985985438525,
+      "brier_score": 0.5963812107572538,
+      "baseline_log_loss": 1.0753125698416872,
+      "baseline_brier_score": 0.6509679444256752,
+      "baseline_accuracy": 0.42978434369162843,
+      "class_distribution": {
+        "A": 0.31703175411784684,
+        "D": 0.2531839021905247,
+        "H": 0.42978434369162843
+      }
+    },
+    "baseline_metrics": {
+      "log_loss": 1.0753125698416872,
+      "brier_score": 0.6509679444256752,
+      "accuracy": 0.42978434369162843
+    }
+  },
+  "candidates_compared": [
+    "training_frequency",
+    "logistic_regression",
+    "poisson_goals",
+    "dixon_coles"
+  ]
+}

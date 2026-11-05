@@ -31,6 +31,12 @@ backend-build:
 	docker build -t $(BACKEND_IMAGE) ./backend
 
 # Runs against the already-running postgres service on the Compose network.
+#
+# Both data mounts are required, and mirror the `web`/`sidekiq` services in
+# docker-compose.yml. The import specs read real CSVs from /data/fixtures, which
+# is the repository's data directory mounted at /data. Omitting it makes 21
+# import/job/command examples fail with "file not found", which looks like a
+# code regression rather than a missing mount.
 backend-test:
 	docker run --rm --network sports-betting-ai_default \
 		-e RAILS_ENV=test \

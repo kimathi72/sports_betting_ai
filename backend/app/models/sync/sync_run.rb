@@ -8,7 +8,22 @@ module Sync
   class SyncRun < ApplicationRecord
     self.table_name = 'sync_runs'
 
-    KINDS = %w[fixtures results].freeze
+    KINDS = %w[fixtures results match_check].freeze
+    # Named kinds, so a synchronizer refers to a constant rather than a string
+    # literal. Values must stay within KINDS, which mirrors the database CHECK
+    # constraint on sync_runs.kind; adding a value needs a migration.
+    FIXTURE_KIND = 'fixtures'.freeze
+    RESULT_KIND = 'results'.freeze
+    # Per-match result checks. A SEPARATE kind because the partial unique index
+    # allows one `running` row per kind: several checks run concurrently, and
+    # sharing `results` made every one after the first raise AlreadyRunning and
+    # lose its ledger row (handout §26).
+    MATCH_CHECK_KIND = 'match_check'.freeze
+
+    # Kinds that run on a SCHEDULE and therefore have a staleness contract. The
+    # status endpoint reports these and only these; `match_check` is driven by the
+    # dispatcher per match and has no schedule to be stale against.
+    SCHEDULED_KINDS = [FIXTURE_KIND, RESULT_KIND].freeze
     STATUSES = %w[running succeeded failed].freeze
 
     # A daily job that is still "running" after this long did not finish. The
@@ -114,7 +129,10 @@ module Sync
     # Filtering by jitter is impossible; a failed attempt does NOT extend the
     # freshness window, because a week of failures must show up as stale data.
     def self.status_summary(now: Time.current)
-      KINDS.each_with_object({}) do |kind, acc|
+      # SCHEDULED kinds only: this summary feeds the staleness contract, and a
+      # per-match check has no schedule to be stale against. Including it would
+      # report a permanent "degraded" for a kind that is working correctly.
+      SCHEDULED_KINDS.each_with_object({}) do |kind, acc|
         success = last_successful(kind)
         attempt = last_attempt(kind)
 

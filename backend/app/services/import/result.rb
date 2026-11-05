@@ -61,6 +61,22 @@ module Import
 
     attr_reader :input, :created, :updated, :skipped, :rejected, :errors
 
+    class << self
+      # `Import::Result.new(success: ...)` is used by the importers as a named
+      # constructor, but `initialize` takes `success:` as a keyword argument too.
+      # Without this, `Result.new(success: true, ...)` raises ArgumentError and
+      # every importer path that reports a run breaks at the last line. Routing
+      # the class-level call through `initialize` keeps a single invariant
+      # implementation while supporting both spellings.
+      def new(*args, **kwargs)
+        return super if args.empty?
+
+        raise ArgumentError, 'Import::Result takes success: as a keyword argument' unless kwargs.key?(:success)
+
+        allocate.tap { |result| result.send(:initialize, *args, **kwargs) }
+      end
+    end
+
     def initialize(success: false, input: 0, created: 0, updated: 0, skipped: 0,
                    rejected: 0, errors: [], processed: nil)
       @success = success

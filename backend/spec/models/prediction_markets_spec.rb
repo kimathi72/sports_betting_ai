@@ -39,8 +39,14 @@ RSpec.describe Prediction, "markets" do
   describe "the supported markets" do
     it "declares exactly the markets the ML service produces" do
       expect(Prediction::MARKETS).to contain_exactly(
-        "1x2", "double_chance", "over_under_2.5", "btts"
+        "1x2", "double_chance", "over_under_2.5", "btts", "correct_score"
       )
+    end
+
+    it "classifies the derived markets apart from the fitted ones" do
+      # Both are projections: double chance of the 1X2 sums, correct score of the
+      # joint scoreline grid. Neither may ever have an artifact of its own.
+      expect(Prediction::DERIVED_MARKETS).to contain_exactly("double_chance", "correct_score")
     end
 
     it "defaults to 1x2 so existing rows keep their meaning" do
@@ -97,17 +103,29 @@ RSpec.describe Prediction, "markets" do
 
   describe "market validation" do
     it "rejects an unsupported market" do
-      expect(build_market("correct_score", { "a" => 1.0 })).not_to be_valid
+      expect(build_market("teleportation", { "a" => 1.0 })).not_to be_valid
     end
 
     it "is enforced by a database check constraint" do
+      # The check constraint is widened together with Prediction::MARKETS — it is
+      # never dropped — so an unknown market must still be refused by the database,
+      # not only by the Rails validation.
       build_1x2.save!
 
       expect {
         ActiveRecord::Base.connection.execute(
-          "UPDATE predictions SET market = 'correct_score' WHERE id = #{Prediction.last.id}"
+          "UPDATE predictions SET market = 'teleportation' WHERE id = #{Prediction.last.id}"
         )
       }.to raise_error(ActiveRecord::StatementInvalid, /predictions_market_supported/)
+    end
+
+    it "accepts the correct_score market the constraint was widened for" do
+      build_1x2.save!
+      expect {
+        ActiveRecord::Base.connection.execute(
+          "UPDATE predictions SET market = 'correct_score' WHERE id = #{Prediction.last.id}"
+        )
+      }.not_to raise_error
     end
   end
 
@@ -197,6 +215,29 @@ RSpec.describe Prediction, "markets" do
 
       expect(record.market_outcomes.keys).to contain_exactly("H", "D", "A")
       expect(record.selection).to eq("H")
+    end
+  end
+
+  describe "the headline outcome of a non-1X2 market" do
+    # DEFECT FOUND BY END-TO-END TESTING: a correct-score row reported
+    # most_likely_outcome "away" with 1.0/0.0/0.0, because the accessor read the
+    # legacy 1X2 columns that every non-1X2 market leaves at that neutral value.
+    # The API serves this field, so the app displayed a confident "away" for a market
+    # that is about scorelines, not results.
+    it "is nil for a market that has no home/draw/away outcomes" do
+      record = build_market("correct_score", { "2-1" => 0.12, "1-1" => 0.11 })
+      record.save!
+      expect(record.reload.most_likely_outcome).to be_nil
+    end
+
+    it "is nil for over/under and BTTS, which are not three-way outcomes either" do
+      over_under = build_market("over_under_2.5", { "over" => 0.55, "under" => 0.45 })
+      over_under.save!
+      expect(over_under.reload.most_likely_outcome).to be_nil
+    end
+
+    it "still reports the favourite for 1X2" do
+      expect(build_1x2.most_likely_outcome).to eq("home")
     end
   end
 

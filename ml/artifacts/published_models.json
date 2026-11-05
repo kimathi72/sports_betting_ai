@@ -1,0 +1,43 @@
+{
+  "published_at": "2026-11-01T12:03:32.009438+00:00",
+  "feature_version": "v2",
+  "artifacts": [
+    {
+      "market": "1x2",
+      "path": "/app/artifacts/model_1x2.joblib",
+      "version": "1x2-logreg-v2-20261101T120332Z",
+      "rows": 33370,
+      "classes": [
+        "H",
+        "D",
+        "A"
+      ]
+    },
+    {
+      "market": "over_under_2.5",
+      "path": "/app/artifacts/model_over_under_2.5.joblib",
+      "version": "over_under_2.5-logreg-v2-20261101T120332Z",
+      "rows": 33370,
+      "classes": [
+        "Over",
+        "Under"
+      ]
+    },
+    {
+      "market": "btts",
+      "path": "/app/artifacts/model_btts.joblib",
+      "version": "btts-logreg-v2-20261101T120332Z",
+      "rows": 33370,
+      "classes": [
+        "Yes",
+        "No"
+      ]
+    },
+    {
+      "market": "goals",
+      "path": "/app/artifacts/model_goal_distribution.joblib",
+      "version": "goal-dc-v2-20261101T120332Z",
+      "rho": 0.04
+    }
+  ]
+}

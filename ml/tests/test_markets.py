@@ -493,8 +493,7 @@ def test_predict_with_market_over_under(ou_model: Path, monkeypatch: pytest.Monk
 
     client = TestClient(app)
     payload = {name: 1.0 for name in FEATURE_NAMES}
-    payload["market"] = "over_under_2.5"
-    resp = client.post("/predict", json=payload)
+    resp = client.post("/predict", params={"market": "over_under_2.5"}, json=payload)
     assert resp.status_code == 200, f"Expected 200 but got {resp.status_code}: {resp.json()}"
     data = resp.json()
     probs = data["probabilities"]
@@ -517,8 +516,7 @@ def test_predict_with_market_btts(btts_model: Path, monkeypatch: pytest.MonkeyPa
 
     client = TestClient(app)
     payload = {name: 1.0 for name in FEATURE_NAMES}
-    payload["market"] = "btts"
-    resp = client.post("/predict", json=payload)
+    resp = client.post("/predict", params={"market": "btts"}, json=payload)
     assert resp.status_code == 200, f"Expected 200 but got {resp.status_code}: {resp.json()}"
     data = resp.json()
     probs = data["probabilities"]
@@ -610,14 +608,16 @@ def test_predict_never_loads_wrong_market_artifact(
     assert main._get_artifact_path("over_under_2.5") == missing
     client = TestClient(app)
     payload = {name: 1.0 for name in FEATURE_NAMES}
-    payload["market"] = "over_under_2.5"
-    resp = client.post("/predict", json=payload)
+    resp = client.post("/predict", params={"market": "over_under_2.5"}, json=payload)
 
     # Must return 503 (model unavailable for requested market), NOT 200 with H/D/A
     assert resp.status_code == 503
     detail = resp.json().get("detail", "").lower()
     assert "over_under_2.5" in detail
-    assert "model for market" in detail
+    # The wording changed when the goal-model fallback was removed: the service now
+    # says plainly that no model is available for the market rather than implying a
+    # generic one might answer.
+    assert "no model is available for market" in detail
 
 
 def test_predict_url_unknown_market_400(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -640,8 +640,7 @@ def test_predict_rejects_unknown_market(monkeypatch: pytest.MonkeyPatch) -> None
 
     client = TestClient(app)
     payload = {name: 1.0 for name in FEATURE_NAMES}
-    payload["market"] = "unknown_market"
-    resp = client.post("/predict", json=payload)
+    resp = client.post("/predict", params={"market": "unknown_market"}, json=payload)
     # Unsupported market must return 400, not 503 (model-unavailable) or 422 (feature validation)
     assert resp.status_code == 400
 

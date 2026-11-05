@@ -6,6 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     ML_METRICS_PATH=/app/artifacts/metrics.json
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

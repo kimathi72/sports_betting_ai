@@ -72,7 +72,7 @@ module Import
         return Resolution.success(identifier.competition, created: false)
       end
 
-      existing = Competition.find_by(name: canonical_competition_name(key))
+      existing = Competition.find_by(name: canonical_competition_name(key)) || catalogue_competition(key)
       if existing
         # A migration or hand-seeded competition already owns this identity.
         # Attach the provider mapping to it rather than creating a second row
@@ -92,7 +92,8 @@ module Import
       # The model also validates name uniqueness, so a race can surface as a
       # RecordInvalid("already been taken") instead of RecordNotUnique.
       record = begin
-        Competition.create!(name: canonical_competition_name(key))
+        entry = CompetitionCatalogue.lookup(key)
+        Competition.create!(name: canonical_competition_name(key), country: entry&.country)
       rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
         return recover_from_competition_race(key, e)
       end
@@ -430,12 +431,32 @@ module Import
       value.to_s.strip.gsub(/\s+/, ' ').upcase
     end
 
+    # The stored name for a competition created from this import key.
+    #
+    # A code such as "E1" is an internal import key, not something to display, so
+    # the name comes from CompetitionCatalogue when the code is known. An unknown
+    # code keeps its previous machine-readable form rather than receiving an
+    # invented league name: a wrong human name is worse than an honest identifier.
     def canonical_competition_name(key)
+      entry = CompetitionCatalogue.lookup(key)
+      return entry.name if entry
+
       "#{provider} competition #{key}"
     end
 
     def canonical_name_matches?(competition, key)
-      competition.name.to_s == canonical_competition_name(key)
+      competition.name.to_s == canonical_competition_name(key) ||
+        competition.name.to_s == CompetitionCatalogue.canonical_name(key) && CompetitionCatalogue.lookup(key).present?
+    end
+
+    # A competition already named by the catalogue but not yet mapped to this
+    # provider. Adopting it keeps one row per competition instead of creating a
+    # duplicate that name uniqueness would reject anyway.
+    def catalogue_competition(key)
+      entry = CompetitionCatalogue.lookup(key)
+      return nil if entry.nil?
+
+      Competition.find_by(name: entry.name)
     end
 
     def mapping_conflict(kind, external_id, target)

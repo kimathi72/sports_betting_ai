@@ -1069,3 +1069,135 @@ volume was removed.** ML artifacts untouched; no candidate promoted.
    and confirm `sidekiq-cron` + `fugit` appear in `Gemfile.lock`.
 2. `bin/rails db:migrate` (development DB).
 3. `bundle exec rspec spec/services/sync/` — fix `synchronizers_spec.rb`.
+
+---
+
+## Phase 6 — Daily automated synchronization ✅ (completed 2026-10-30)
+
+> Numbering note: the table above numbers the *engineering* phases 0–14, where row
+> 6 is "Historical data pipeline" (already complete). The Phase 6 referenced by
+> the session-pause handover below is **daily automated synchronization**, which
+> is recorded here as its own section so the existing phase history is not
+> renumbered.
+
+**Scope delivered:** scheduled fixture and result synchronization, the ledger that
+makes it observable, recurring Sidekiq-Cron schedules in UTC, a status endpoint,
+and the API contract handover for the mobile client.
+
+### Recovered state (before new work)
+
+| Item | Verified state |
+| --- | --- |
+| `sync_runs` migration | **Already applied to development** — a previous entrypoint `db:prepare` had run it. Table, 3 indexes and both check constraints confirmed via `\d sync_runs`. |
+| `Gemfile.lock` | **`sidekiq-cron`/`fugit` were missing.** `bundle lock --update sidekiq-cron` fails (bundler refuses `--update` for a gem absent from the lock); a plain `bundle lock` resolved them. Diff was **purely additive** (16 lines: `sidekiq-cron 2.4.0`, `fugit 1.14.0`, `cronex`, `et-orbi`, `raabro`, `unicode` + the DEPENDENCIES line). No existing version moved. |
+| `spec/services/sync/` | **6 of 26 failing.** `synchronizers_spec.rb` had never been run and contained a spec bug: the CSV header used `'...\n'` (single quotes), a literal backslash-n, so the file genuinely lacked an `FTR` column. Fixed the fixture, not the assertion. |
+| Backend image | Rebuilt. The `sidekiq` Compose service was running a **two-week-old** image with no `sidekiq-cron`, so the scheduler could not boot at all until `web` and `sidekiq` were rebuilt. |
+
+### Jobs
+
+| Job | Queue | Responsibility |
+| --- | --- | --- |
+| `SyncFixturesJob` | `sync` | New fixtures, reschedules, postponements, fixture→completed promotion |
+| `SyncResultsJob` | `sync` | Completed results, reconciliation of already-completed matches |
+
+Both include `ScheduledSynchronization` and delegate entirely to the existing
+`Sync::{Fixture,Result}Synchronizer` — **no import logic lives in a job**, so the
+daily path and the historical import path cannot drift.
+
+Reliability properties, each covered by a spec:
+
+- **Idempotent** — the importer's `ExternalIdentifier` keyed rows; a repeat run
+  reports `skipped`.
+- **Overlap prevention** — partial unique index `index_sync_runs_one_running_per_kind`
+  refuses a second open run of the same kind at the **database** level. An overlap
+  is logged at INFO and returns normally: it is the designed outcome, not a
+  failure, and must not fill the retry set.
+- **Bounded retries** — `MAX_RETRIES = 3`, backoff `60s / 300s / 1500s`.
+- **Transient vs permanent** — permanent (`PermanentError`, `ConfigurationError`,
+  `Unavailable`, `InvalidContent`, `InvalidInput`) are `:discard`ed; timeouts,
+  connection loss and deadlocks are retried.
+- **Stale-run recovery** — `SyncRun.start!` closes a `running` row older than
+  `STALE_AFTER` (2h) as `failed: abandoned` before opening a new one, so a crashed
+  worker cannot block the schedule forever.
+- **No silent failure** — a `failed` ledger row raises `SynchronizationFailed`, so
+  the queue agrees with the ledger.
+- **Secrets** — `last_error` is redacted before storage; specs assert a key in a
+  provider URL never reaches the database or the status endpoint.
+
+`ResultSynchronizer` also gained the deferral it declared but never implemented:
+while the newest pending fixture is inside the publication window (default 60 min
+after an estimated 120-min match), the provider is **not** called and the run is
+recorded as succeeded with `details.deferred`. Specs prove no request is made.
+
+### Schedule
+
+| Entry | Cron (UTC) | Rationale |
+| --- | --- | --- |
+| `sync_fixtures` | `30 3 * * *` | Overnight: previous day's file final, next day's fixtures published; quietest hour on a rate-limited source. |
+| `sync_results` | `0 6 * * *` | 2.5 h later; late kickoffs are outside the publication window, so the run does not report a misleading "0 new results". |
+
+The timezone is **part of the cron string** (`30 3 * * * UTC`), so a change to
+the process TZ cannot shift the schedule. `config/sidekiq_cron_schedule.rb` is the
+single source of truth, read by the worker boot hook **and** the status endpoint,
+so the advertised schedule cannot diverge from the registered one.
+
+Registration is idempotent (upsert by entry name) and re-run on every worker boot,
+so a fresh Redis gets the schedule and a changed cron takes effect on restart. A
+registration failure is logged loudly but does not crash the worker.
+
+### Live verification (real provider, not mocks)
+
+| Check | Result |
+| --- | --- |
+| Scheduler startup | `[sidekiq-cron] registered schedule: sync_fixtures, sync_results` in the worker log |
+| Registration queryable | `rails sync:schedule:list` → both entries, `cron=30 3 * * * UTC` / `0 6 * * * UTC` |
+| **Scheduler actually fires** | A temporary one-off entry was registered 2 minutes ahead. At `08:36:07` Sidekiq enqueued and ran `SyncFixturesJob`; probe removed afterwards. |
+| Fixture job | `succeeded in 11.8s: fetched=80 created=0 updated=0 skipped=80 rejected=0` — downloaded **2526_E0.csv (203438 B)** and **2627_E0.csv (39368 B)** from football-data.co.uk |
+| Result job | `succeeded in 6.7s: fetched=80 … skipped=80` via `SyncResultsJob.perform_now('manual')` |
+| Status endpoint | `GET /api/v1/sync/status` → `degraded` before the result run, `ok` after; counts, durations, `next_run_at` correct |
+| Restart survival | Entries persist in Redis and are re-upserted on boot; registration is not a one-shot |
+
+**Provider verification is LIVE** for the two job executions above (real HTTP to
+`football-data.co.uk`, real files written to `data/raw/`). Unit and job specs use
+mocked provider responses; those are labelled as such and are not evidence of
+connectivity. The economic state at verification time (October 2026) meant the
+2026/27 file was fully completed, so runs legitimately reported `created=0,
+updated=0` — the same file was re-imported and correctly produced no duplicates.
+
+### Status API
+
+`GET /api/v1/sync/status` — read-only, no secrets, published schedule. Reports
+last success, last attempt with counts/duration/error, `running`, `stale`, and
+`next_run_at`. 10 request specs.
+
+### CORS
+
+`rack-cors` was installed but the policy was entirely commented out. Enabled with
+`CORS_ORIGINS` (comma-separated), development defaults for Expo on `localhost:8081`
+/ `:19006`, **no production default and no production wildcard**, credentials off.
+Verified live: allowed origin receives `access-control-allow-origin` and a `200`
+preflight; an unlisted origin receives no CORS headers.
+
+### Tests
+
+| Run | Result |
+| --- | --- |
+| `spec/services/sync/` | 31 examples, 0 failures |
+| Sync jobs + schedule + status endpoint | 28 examples, 0 failures |
+| Full backend suite | **796 examples, 0 failures** (baseline was 737; **+59**) |
+
+One pre-existing spec was corrected (the malformed CSV header described above) —
+the assertion was not weakened. No test was deleted.
+
+**ML and historical data untouched:** no training, no evaluation, no promotion, no
+artifact write. Both jobs contain a structural spec asserting they never reference
+the release workflow. The historical season rows in the development database
+(2015/16–2025/26) are unchanged; the synchronization only refreshes the current
+season file.
+
+**API contracts:** `docs/api-contracts.md` — verified against the live API for
+health, readiness, competitions, teams, seasons, matches, predictions (POST/GET
+index/GET show), model status and sync status.
+
+**Next incomplete task:** Phase 7 / mobile integration (Kilo Code). The backend
+contract in `docs/api-contracts.md` is the source of truth for that work.

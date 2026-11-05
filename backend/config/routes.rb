@@ -31,6 +31,9 @@ Rails.application.routes.draw do
 
       # Which model versions have produced predictions, and how recently.
       get "model_status", to: "model_status#show"
+      # Operational view of the daily synchronization ledger: last success per
+      # kind, record counts, failures and staleness. Read-only by design.
+      get "sync/status", to: "sync_status#show"
     end
   end
 

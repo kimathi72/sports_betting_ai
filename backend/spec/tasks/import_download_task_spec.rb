@@ -52,7 +52,9 @@ RSpec.describe 'rake import:download' do
       # Rake backtrace to the operator.
       allow(Import::CsvDownloader).to receive(:new).and_call_original
       original = ENV.fetch('DIVISION', nil)
-      ENV['DIVISION'] = 'SP1'
+      # SP1 (La Liga) became a supported division in the competition expansion, so
+      # this example needs a code the source does not have at all.
+      ENV['DIVISION'] = 'ZZ9'
 
       begin
         status = run_task('2024/25')

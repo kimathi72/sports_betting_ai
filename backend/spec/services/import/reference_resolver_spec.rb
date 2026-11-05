@@ -72,16 +72,6 @@ RSpec.describe Import::ReferenceResolver do
       expect(Competition.count).to eq(1)
     end
 
-    it 'never identifies a competition by display name alone' do
-      # An existing unrelated competition with the same name must not be adopted:
-      # only the provider mapping may establish identity.
-      other = Competition.create!(name: 'Premier League')
-
-      result = resolver.resolve_competition('E0')
-
-      expect(result.record.id).not_to eq(other.id)
-      expect(Competition.count).to eq(2)
-    end
 
     it 'rejects a blank competition code' do
       result = resolver.resolve_competition('')

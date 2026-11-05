@@ -68,6 +68,14 @@ services:
     build:
       context: ./backend
     profiles: ["application"]
+    # Provider credentials live in backend/.env (git-ignored) and are read by
+    # Rails at runtime. `env_file` rather than `environment:` because the values
+    # must never be written into this tracked file. `required: false` keeps the
+    # stack startable for anyone without credentials; the API-Football client
+    # then reports a configuration error instead of the app failing to boot.
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
       RAILS_ENV: development
       DATABASE_HOST: postgres
@@ -114,6 +122,14 @@ services:
     build:
       context: ./backend
     profiles: ["application"]
+    # Provider credentials live in backend/.env (git-ignored) and are read by
+    # Rails at runtime. `env_file` rather than `environment:` because the values
+    # must never be written into this tracked file. `required: false` keeps the
+    # stack startable for anyone without credentials; the API-Football client
+    # then reports a configuration error instead of the app failing to boot.
+    env_file:
+      - path: ./backend/.env
+        required: false
     command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
     environment:
       RAILS_ENV: development
@@ -127,6 +143,14 @@ services:
       # localhost: inside a container localhost is the container itself.
       ML_SERVICE_URL: ${ML_SERVICE_URL:-http://ml:8000}
       RUN_MIGRATIONS: "false"
+      # Which recurring jobs this worker registers at boot (handout §25.4).
+      #
+      # WITHOUT THIS LINE the variable is silently dropped: Compose passes only
+      # the keys listed here, so `SIDEKIQ_CRON_MODE=... docker compose up -d
+      # sidekiq` would start a worker with the variable ABSENT, which resolves to
+      # `disabled` — registering nothing at all. The default below is `disabled`
+      # for the same reason: an unset variable must never activate every job.
+      SIDEKIQ_CRON_MODE: ${SIDEKIQ_CRON_MODE:-disabled}
     volumes:
       - ./backend:/app
       # The worker resolves the same import paths the `web` service accepts, so

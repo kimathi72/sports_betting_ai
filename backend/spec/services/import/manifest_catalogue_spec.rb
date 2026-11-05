@@ -19,6 +19,7 @@ RSpec.describe 'committed import manifests' do
   MANIFESTS = Rails.root.join('..', 'data', 'manifests')
   HISTORY = MANIFESTS.join('premier_league_history.yml')
   CURRENT = MANIFESTS.join('premier_league_current.yml')
+  MULTI = MANIFESTS.join('multi_league_history.yml')
 
   def load_manifest(path)
     YAML.safe_load(File.read(path), permitted_classes: [], aliases: false)
@@ -120,6 +121,60 @@ RSpec.describe 'committed import manifests' do
         expect(File.file?(host_path)).to be(true)
         expect(File.size(host_path)).to be > 0
       end
+    end
+  end
+end
+
+# The multi-competition backfill is a third, independent manifest. It exists
+# because the Premier League is not the only competition the models are trained
+# on, and it must obey the same shape rules as the others.
+RSpec.describe 'the multi-league import manifest' do
+  manifests = Rails.root.join('..', 'data', 'manifests')
+  multi = manifests.join('multi_league_history.yml')
+
+  def load_entries(path)
+    YAML.safe_load(File.read(path), permitted_classes: [], aliases: false)
+  end
+
+  it 'exists' do
+    expect(multi).to exist
+  end
+
+  it 'covers only completed seasons (2024/25 and 2025/26)' do
+    entries = load_entries(multi)
+    expect(entries.map { |e| e['season'].to_s }.uniq.sort).to eq(%w[2024/25 2025/26])
+  end
+
+  it 'covers the verified European divisions' do
+    entries = load_entries(multi)
+    expect(entries.map { |e| e['competition'] }.uniq.sort)
+      .to eq(%w[B1 D1 E1 F1 I1 N1 P1 SC0 SP1 T1])
+  end
+
+  it 'never duplicates a competition and season' do
+    entries = load_entries(multi)
+    keys = entries.map { |e| [e['competition'], e['season'].to_s] }
+    expect(keys.uniq.length).to eq(entries.length)
+  end
+
+  it 'never overlaps the Premier League manifests' do
+    entries = load_entries(multi)
+    other = %w[premier_league_history.yml premier_league_current.yml].flat_map do |name|
+      load_entries(manifests.join(name)).map { |e| [e['competition'], e['season'].to_s] }
+    end
+    mine = entries.map { |e| [e['competition'], e['season'].to_s] }
+    expect(mine & other).to be_empty
+  end
+
+  it 'names files the downloader can produce' do
+    load_entries(multi).each do |entry|
+      downloader = Import::CsvDownloader.new(
+        destination_dir: '/tmp', division: entry['competition']
+      )
+      expected = File.basename(entry['path']).split('_').first
+      expect(downloader.source_url(season: entry['season'].to_s)).to include("/#{expected}/")
+      expect(File.basename(entry['path']))
+        .to eq("#{expected}_#{entry['competition']}.csv")
     end
   end
 end

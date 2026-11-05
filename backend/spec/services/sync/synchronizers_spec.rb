@@ -24,7 +24,10 @@ RSpec.describe 'Daily synchronization' do
   # returns a downloader that reports it as freshly downloaded.
   def downloader_for(rows)
     path = File.join(destination, '2627_E0.csv')
-    header = 'Div,Date,Time,HomeTeam,AwayTeam,FTHG,FTAG,FTR\n'
+    # Double quotes on purpose: a single-quoted "\n" is a literal backslash-n,
+    # which makes the header one line ending in "FTR\n" and the file genuinely
+    # missing the FTR column.
+    header = "Div,Date,Time,HomeTeam,AwayTeam,FTHG,FTAG,FTR\n"
     body = rows.map do |row|
       "#{row[:div] || 'E0'},#{row[:date]},#{row[:time]},#{row[:home]},#{row[:away]},#{row[:fthg]},#{row[:ftag]},#{row[:ftr]}\n"
     end.join

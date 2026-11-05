@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_05_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,12 +33,14 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
     t.bigint "match_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "review_state", default: "approved", null: false
     t.index ["competition_id"], name: "index_external_identifiers_on_competition_id"
     t.index ["match_id"], name: "index_external_identifiers_on_match_id"
     t.index ["provider", "external_id"], name: "index_external_identifiers_on_provider_external_id_competition", unique: true, where: "(competition_id IS NOT NULL)"
     t.index ["provider", "external_id"], name: "index_external_identifiers_on_provider_external_id_match", unique: true, where: "(match_id IS NOT NULL)"
     t.index ["provider", "external_id"], name: "index_external_identifiers_on_provider_external_id_season", unique: true, where: "(season_id IS NOT NULL)"
     t.index ["provider", "external_id"], name: "index_external_identifiers_on_provider_external_id_team", unique: true, where: "(team_id IS NOT NULL)"
+    t.index ["provider", "review_state"], name: "index_external_identifiers_on_provider_and_review_state"
     t.index ["season_id"], name: "index_external_identifiers_on_season_id"
     t.index ["team_id"], name: "index_external_identifiers_on_team_id"
     t.check_constraint "num_nonnulls(competition_id, season_id, team_id, match_id) = 1", name: "external_identifiers_single_target"
@@ -66,7 +68,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
     t.check_constraint "(home_score IS NULL) = (away_score IS NULL)", name: "matches_scores_paired"
     t.check_constraint "home_team_id <> away_team_id", name: "matches_teams_differ"
     t.check_constraint "status::text <> 'completed'::text OR home_score IS NOT NULL AND away_score IS NOT NULL", name: "matches_completed_has_scores"
-    t.check_constraint "status::text = ANY (ARRAY['scheduled'::character varying, 'postponed'::character varying, 'cancelled'::character varying, 'in_progress'::character varying, 'completed'::character varying]::text[])", name: "matches_status_supported"
+    t.check_constraint "status::text = ANY (ARRAY['scheduled'::character varying::text, 'postponed'::character varying::text, 'cancelled'::character varying::text, 'in_progress'::character varying::text, 'completed'::character varying::text])", name: "matches_status_supported"
   end
 
   create_table "predictions", force: :cascade do |t|
@@ -83,16 +85,50 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
     t.datetime "updated_at", null: false
     t.string "market", default: "1x2", null: false
     t.jsonb "outcomes", default: {}, null: false
+    t.datetime "issued_kickoff_at"
+    t.string "model_freeze_digest"
     t.index ["match_id", "generated_at"], name: "index_predictions_on_match_and_generated_at"
+    t.index ["match_id", "market", "generated_at"], name: "index_predictions_on_match_id_and_market_and_generated_at"
     t.index ["match_id", "market", "generated_at"], name: "index_predictions_on_match_market_generated_at"
     t.index ["match_id", "market"], name: "index_predictions_current_per_market", unique: true, where: "(superseded_at IS NULL)"
     t.index ["match_id", "model_version"], name: "index_predictions_on_match_and_model_version"
     t.index ["match_id"], name: "index_predictions_on_match_id"
-    t.check_constraint "(home_probability + draw_probability + away_probability) = 1::numeric", name: "predictions_probabilities_sum_to_one"
+    t.index ["model_freeze_digest"], name: "index_predictions_on_model_freeze_digest"
+    t.check_constraint "(home_probability + draw_probability + away_probability) >= (1::numeric - 0.00001) AND (home_probability + draw_probability + away_probability) <= (1::numeric + 0.00001)", name: "predictions_probabilities_sum_to_one"
     t.check_constraint "home_probability <= 1::numeric AND draw_probability <= 1::numeric AND away_probability <= 1::numeric", name: "predictions_probabilities_at_most_one"
     t.check_constraint "home_probability >= 0::numeric AND draw_probability >= 0::numeric AND away_probability >= 0::numeric", name: "predictions_probabilities_non_negative"
     t.check_constraint "jsonb_typeof(outcomes) = 'object'::text", name: "predictions_outcomes_is_object"
-    t.check_constraint "market::text = ANY (ARRAY['1x2'::character varying, 'double_chance'::character varying, 'over_under_2.5'::character varying, 'btts'::character varying]::text[])", name: "predictions_market_supported"
+    t.check_constraint "market::text = ANY (ARRAY['1x2'::character varying::text, 'double_chance'::character varying::text, 'over_under_2.5'::character varying::text, 'btts'::character varying::text, 'correct_score'::character varying::text])", name: "predictions_market_supported"
+  end
+
+  create_table "prospective_evaluation_records", force: :cascade do |t|
+    t.bigint "prediction_id", null: false
+    t.bigint "match_id", null: false
+    t.string "market", null: false
+    t.string "actual_outcome", null: false
+    t.string "predicted_outcome"
+    t.integer "home_score", null: false
+    t.integer "away_score", null: false
+    t.float "log_loss"
+    t.boolean "was_correct"
+    t.string "protocol_digest"
+    t.datetime "evaluated_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["market", "evaluated_at"], name: "idx_on_market_evaluated_at_c993cb96a3"
+    t.index ["match_id"], name: "index_prospective_evaluation_records_on_match_id"
+    t.index ["prediction_id"], name: "index_prospective_evaluation_records_on_prediction_id", unique: true
+    t.check_constraint "home_score >= 0 AND away_score >= 0", name: "prospective_evaluations_non_negative_scores"
+  end
+
+  create_table "result_check_locks", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.datetime "acquired_at", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_result_check_locks_on_expires_at"
+    t.index ["match_id"], name: "index_result_check_locks_on_match_id", unique: true
   end
 
   create_table "seasons", force: :cascade do |t|
@@ -123,10 +159,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["kind", "started_at"], name: "index_sync_runs_on_kind_and_started_at"
-    t.index ["kind"], name: "index_sync_runs_one_running_per_kind", unique: true, where: "((status)::text = 'running'::text)"
+    t.index ["kind"], name: "index_sync_runs_one_running_per_kind", unique: true, where: "(((status)::text = 'running'::text) AND ((kind)::text <> 'match_check'::text))"
     t.index ["status", "started_at"], name: "index_sync_runs_on_status_and_started_at"
-    t.check_constraint "kind::text = ANY (ARRAY['fixtures'::character varying, 'results'::character varying]::text[])", name: "sync_runs_kind_check"
-    t.check_constraint "status::text = ANY (ARRAY['running'::character varying, 'succeeded'::character varying, 'failed'::character varying]::text[])", name: "sync_runs_status_check"
+    t.check_constraint "kind::text = ANY (ARRAY['fixtures'::character varying, 'results'::character varying, 'match_check'::character varying]::text[])", name: "sync_runs_kind_check"
+    t.check_constraint "status::text = ANY (ARRAY['running'::character varying::text, 'succeeded'::character varying::text, 'failed'::character varying::text])", name: "sync_runs_status_check"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -138,6 +174,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
     t.index ["normalized_name"], name: "index_teams_on_normalized_name", unique: true
   end
 
+  create_table "zz_preserve_snapshot", id: :integer, default: nil, force: :cascade do |t|
+    t.text "digest"
+  end
+
   add_foreign_key "external_identifiers", "competitions"
   add_foreign_key "external_identifiers", "matches"
   add_foreign_key "external_identifiers", "seasons"
@@ -147,5 +187,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_02_120000) do
   add_foreign_key "matches", "teams", column: "away_team_id"
   add_foreign_key "matches", "teams", column: "home_team_id"
   add_foreign_key "predictions", "matches"
+  add_foreign_key "prospective_evaluation_records", "matches"
+  add_foreign_key "prospective_evaluation_records", "predictions"
   add_foreign_key "seasons", "competitions"
 end

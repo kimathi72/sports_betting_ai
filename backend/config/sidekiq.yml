@@ -1,3 +1,7 @@
+# Concurrency 5: the two scheduled sync jobs plus room for on-demand imports and
+# predictions. Sync jobs are serialised per kind by the ledger's partial unique
+# index, so a higher concurrency would only let other queues compete for the
+# provider, which is rate-limited.
 :concurrency: 5
 :queues:
   - default
@@ -7,4 +11,8 @@
   # Prediction requests. Separate from imports so a slow ML service cannot delay
   # a data import, and so the two can be scaled independently.
   - predictions
+  # Daily synchronization. Its own queue so a scheduled fixture or result import
+  # is never stuck behind a backlog of historical imports on the `imports` queue,
+  # and so the two scheduled jobs can be traced independently in the dashboard.
+  - sync
   - mailers

@@ -276,16 +276,31 @@ def test_double_chance_equals_its_1x2_projection_exactly(tmp_path) -> None:
     assert dc.probabilities["12"] == pytest.approx(p["H"] + p["A"])
 
 
-def test_double_chance_works_through_the_body_market_field(tmp_path) -> None:
+def test_double_chance_is_selected_by_the_query_parameter(tmp_path) -> None:
+    """The market travels in the QUERY STRING, never in the body.
+
+    An earlier schema accepted an optional `market` body field, which allowed the
+    path and the body to disagree about which market was being predicted. The body
+    now forbids extra keys, so the market has exactly one source.
+    """
     from ml.app import main as service
 
     path = _real_1x2_bundle(tmp_path)
     service.set_artifact_path(MARKET_1X2, path)
 
-    request = service.MarketPredictRequest(market=MARKET_DOUBLE_CHANCE, **_feature_request())
-    response = service.predict(request)
+    request = service.PredictRequest(**_feature_request())
+    response = service.predict(request, market=MARKET_DOUBLE_CHANCE)
 
     assert set(response.probabilities) == {"1X", "X2", "12"}
+
+
+def test_the_body_cannot_carry_a_market_field(tmp_path) -> None:
+    from pydantic import ValidationError
+
+    from ml.app import main as service
+
+    with pytest.raises(ValidationError):
+        service.PredictRequest(market="btts", **_feature_request())
 
 
 def _request_obj():

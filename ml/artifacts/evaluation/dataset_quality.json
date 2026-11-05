@@ -1,0 +1,5847 @@
+{
+  "coverage": [
+    {
+      "competition": "football_data competition B1",
+      "completed": 3840,
+      "first_kickoff": "2016-07-29",
+      "last_kickoff": "2017-03-12",
+      "matches": 3840,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 3840,
+      "first_kickoff": "2017-07-28",
+      "last_kickoff": "2018-03-11",
+      "matches": 3840,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 3840,
+      "first_kickoff": "2018-07-27",
+      "last_kickoff": "2019-03-17",
+      "matches": 3840,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 3712,
+      "first_kickoff": "2019-07-26",
+      "last_kickoff": "2020-03-07",
+      "matches": 3712,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 5508,
+      "first_kickoff": "2020-08-08",
+      "last_kickoff": "2021-04-18",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 5508,
+      "first_kickoff": "2021-07-23",
+      "last_kickoff": "2022-04-10",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 5508,
+      "first_kickoff": "2022-07-22",
+      "last_kickoff": "2023-04-23",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 4992,
+      "first_kickoff": "2023-07-28",
+      "last_kickoff": "2024-06-02",
+      "matches": 4992,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 4992,
+      "first_kickoff": "2024-07-26",
+      "last_kickoff": "2025-05-25",
+      "matches": 4992,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 4976,
+      "first_kickoff": "2025-07-25",
+      "last_kickoff": "2026-05-24",
+      "matches": 4976,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 16
+    },
+    {
+      "competition": "football_data competition B1",
+      "completed": 1440,
+      "first_kickoff": "2026-08-07",
+      "last_kickoff": "2026-10-25",
+      "matches": 1440,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2016-08-26",
+      "last_kickoff": "2017-05-20",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2017-08-18",
+      "last_kickoff": "2018-05-12",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2018-08-24",
+      "last_kickoff": "2019-05-18",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2019-08-16",
+      "last_kickoff": "2020-06-27",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2020-09-18",
+      "last_kickoff": "2021-05-22",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2021-08-13",
+      "last_kickoff": "2022-05-14",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2022-08-05",
+      "last_kickoff": "2023-05-27",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2023-08-18",
+      "last_kickoff": "2024-05-18",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2024-08-23",
+      "last_kickoff": "2025-05-17",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 5508,
+      "first_kickoff": "2025-08-22",
+      "last_kickoff": "2026-05-16",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition D1",
+      "completed": 1134,
+      "first_kickoff": "2026-08-28",
+      "last_kickoff": "2026-10-25",
+      "matches": 1134,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2015-08-08",
+      "last_kickoff": "2016-05-17",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2015/16",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2016-08-13",
+      "last_kickoff": "2017-05-21",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2017-08-11",
+      "last_kickoff": "2018-05-13",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2018-08-10",
+      "last_kickoff": "2019-05-12",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2019-08-09",
+      "last_kickoff": "2020-07-26",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2020-09-12",
+      "last_kickoff": "2021-05-23",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2021-08-13",
+      "last_kickoff": "2022-05-22",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2022-08-05",
+      "last_kickoff": "2023-05-28",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2023-08-11",
+      "last_kickoff": "2024-05-19",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2024-08-16",
+      "last_kickoff": "2025-05-25",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 7600,
+      "first_kickoff": "2025-08-15",
+      "last_kickoff": "2026-12-26",
+      "matches": 7620,
+      "other_status": 0,
+      "scheduled": 20,
+      "season": "2025/26",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition E0",
+      "completed": 1680,
+      "first_kickoff": "2026-08-21",
+      "last_kickoff": "2027-05-30",
+      "matches": 7560,
+      "other_status": 0,
+      "scheduled": 5880,
+      "season": "2026/27",
+      "teams": 21
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2016-08-05",
+      "last_kickoff": "2017-05-07",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2017-08-04",
+      "last_kickoff": "2018-05-06",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2018-08-03",
+      "last_kickoff": "2019-05-05",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2019-08-02",
+      "last_kickoff": "2020-07-22",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2020-09-11",
+      "last_kickoff": "2021-05-08",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2021-08-06",
+      "last_kickoff": "2022-05-07",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2022-07-29",
+      "last_kickoff": "2023-05-08",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2023-08-04",
+      "last_kickoff": "2024-05-04",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2024-08-09",
+      "last_kickoff": "2025-05-03",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 13248,
+      "first_kickoff": "2025-08-08",
+      "last_kickoff": "2026-05-02",
+      "matches": 13248,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition E1",
+      "completed": 3456,
+      "first_kickoff": "2026-08-14",
+      "last_kickoff": "2026-10-24",
+      "matches": 3456,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 24
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 7600,
+      "first_kickoff": "2016-08-12",
+      "last_kickoff": "2017-05-20",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 7600,
+      "first_kickoff": "2017-08-04",
+      "last_kickoff": "2018-05-19",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 7600,
+      "first_kickoff": "2018-08-10",
+      "last_kickoff": "2019-05-24",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 5580,
+      "first_kickoff": "2019-08-09",
+      "last_kickoff": "2020-03-08",
+      "matches": 5580,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 7600,
+      "first_kickoff": "2020-08-21",
+      "last_kickoff": "2021-05-23",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 7600,
+      "first_kickoff": "2021-08-06",
+      "last_kickoff": "2022-05-21",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 7600,
+      "first_kickoff": "2022-08-05",
+      "last_kickoff": "2023-06-03",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 5508,
+      "first_kickoff": "2023-08-11",
+      "last_kickoff": "2024-05-19",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 5508,
+      "first_kickoff": "2024-08-16",
+      "last_kickoff": "2025-05-17",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 5508,
+      "first_kickoff": "2025-08-15",
+      "last_kickoff": "2026-05-17",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition F1",
+      "completed": 1296,
+      "first_kickoff": "2026-08-21",
+      "last_kickoff": "2026-10-26",
+      "matches": 1296,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2016-08-20",
+      "last_kickoff": "2017-05-28",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2017-08-19",
+      "last_kickoff": "2018-05-20",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2018-08-18",
+      "last_kickoff": "2019-05-26",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2019-08-24",
+      "last_kickoff": "2020-08-02",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2020-09-19",
+      "last_kickoff": "2021-05-23",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2021-08-21",
+      "last_kickoff": "2022-05-22",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2022-08-13",
+      "last_kickoff": "2023-06-04",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2023-08-19",
+      "last_kickoff": "2024-06-02",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2024-08-17",
+      "last_kickoff": "2025-05-25",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 7600,
+      "first_kickoff": "2025-08-23",
+      "last_kickoff": "2026-05-24",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition I1",
+      "completed": 1800,
+      "first_kickoff": "2026-08-22",
+      "last_kickoff": "2026-10-29",
+      "matches": 1800,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2016-08-05",
+      "last_kickoff": "2017-05-14",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2017-08-11",
+      "last_kickoff": "2018-05-06",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2018-08-10",
+      "last_kickoff": "2019-05-15",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 4176,
+      "first_kickoff": "2019-08-02",
+      "last_kickoff": "2020-03-08",
+      "matches": 4176,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2020-09-12",
+      "last_kickoff": "2021-05-16",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2021-08-13",
+      "last_kickoff": "2022-05-15",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2022-08-05",
+      "last_kickoff": "2023-05-28",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2023-08-11",
+      "last_kickoff": "2024-05-19",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2024-08-09",
+      "last_kickoff": "2025-05-18",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 5508,
+      "first_kickoff": "2025-08-08",
+      "last_kickoff": "2026-05-17",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition N1",
+      "completed": 1620,
+      "first_kickoff": "2026-08-07",
+      "last_kickoff": "2026-10-25",
+      "matches": 1620,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2016-08-12",
+      "last_kickoff": "2017-05-21",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2017-08-06",
+      "last_kickoff": "2018-05-13",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2018-08-10",
+      "last_kickoff": "2019-05-19",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2019-08-09",
+      "last_kickoff": "2020-07-26",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2020-09-18",
+      "last_kickoff": "2021-05-19",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2021-08-06",
+      "last_kickoff": "2022-05-15",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2022-08-05",
+      "last_kickoff": "2023-05-27",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2023-08-11",
+      "last_kickoff": "2024-05-18",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2024-08-09",
+      "last_kickoff": "2025-05-17",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 5508,
+      "first_kickoff": "2025-08-08",
+      "last_kickoff": "2026-05-16",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition P1",
+      "completed": 1458,
+      "first_kickoff": "2026-08-07",
+      "last_kickoff": "2026-10-26",
+      "matches": 1458,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2016-08-06",
+      "last_kickoff": "2017-05-21",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2017-08-05",
+      "last_kickoff": "2018-05-13",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2018-08-04",
+      "last_kickoff": "2019-05-19",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2148,
+      "first_kickoff": "2019-08-03",
+      "last_kickoff": "2020-03-11",
+      "matches": 2148,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2020-08-01",
+      "last_kickoff": "2021-05-16",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2021-07-31",
+      "last_kickoff": "2022-05-15",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2022-07-30",
+      "last_kickoff": "2023-05-28",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2023-08-05",
+      "last_kickoff": "2024-05-19",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2024-08-03",
+      "last_kickoff": "2025-05-18",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 2736,
+      "first_kickoff": "2025-08-02",
+      "last_kickoff": "2026-05-17",
+      "matches": 2736,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SC0",
+      "completed": 792,
+      "first_kickoff": "2026-07-31",
+      "last_kickoff": "2026-10-28",
+      "matches": 792,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 12
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2016-08-19",
+      "last_kickoff": "2017-05-21",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2017-08-18",
+      "last_kickoff": "2018-05-20",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2018-08-17",
+      "last_kickoff": "2019-05-19",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2019-08-16",
+      "last_kickoff": "2020-07-19",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2020-09-12",
+      "last_kickoff": "2021-05-23",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2021-08-13",
+      "last_kickoff": "2022-05-22",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2022-08-12",
+      "last_kickoff": "2023-06-04",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2023-08-11",
+      "last_kickoff": "2024-05-26",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2024-08-15",
+      "last_kickoff": "2025-05-25",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 7600,
+      "first_kickoff": "2025-08-15",
+      "last_kickoff": "2026-05-24",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition SP1",
+      "completed": 1980,
+      "first_kickoff": "2026-08-15",
+      "last_kickoff": "2026-10-26",
+      "matches": 1980,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 5508,
+      "first_kickoff": "2016-08-19",
+      "last_kickoff": "2017-06-03",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2016/17",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 5508,
+      "first_kickoff": "2017-08-11",
+      "last_kickoff": "2018-05-19",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2017/18",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 5508,
+      "first_kickoff": "2018-08-10",
+      "last_kickoff": "2019-05-26",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2018/19",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 5508,
+      "first_kickoff": "2019-08-16",
+      "last_kickoff": "2020-07-26",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2019/20",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 8820,
+      "first_kickoff": "2020-09-11",
+      "last_kickoff": "2021-05-15",
+      "matches": 8820,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2020/21",
+      "teams": 21
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 7600,
+      "first_kickoff": "2021-08-13",
+      "last_kickoff": "2022-05-22",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2021/22",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 6498,
+      "first_kickoff": "2022-08-05",
+      "last_kickoff": "2023-06-07",
+      "matches": 6498,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2022/23",
+      "teams": 19
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 7600,
+      "first_kickoff": "2023-08-11",
+      "last_kickoff": "2024-05-26",
+      "matches": 7600,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2023/24",
+      "teams": 20
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 6498,
+      "first_kickoff": "2024-08-09",
+      "last_kickoff": "2025-06-01",
+      "matches": 6498,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2024/25",
+      "teams": 19
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 5508,
+      "first_kickoff": "2025-08-08",
+      "last_kickoff": "2026-05-17",
+      "matches": 5508,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2025/26",
+      "teams": 18
+    },
+    {
+      "competition": "football_data competition T1",
+      "completed": 1458,
+      "first_kickoff": "2026-08-14",
+      "last_kickoff": "2026-10-26",
+      "matches": 1458,
+      "other_status": 0,
+      "scheduled": 0,
+      "season": "2026/27",
+      "teams": 18
+    }
+  ],
+  "duplicates": {
+    "duplicate_fixture_same_day": [],
+    "duplicate_provider_identifiers": [],
+    "repeated_pair_over_two_meetings": [
+      {
+        "away": "Kilmarnock",
+        "home": "Hamilton",
+        "meetings": 3,
+        "season": "2016/17"
+      },
+      {
+        "away": "Dundee",
+        "home": "Motherwell",
+        "meetings": 3,
+        "season": "2016/17"
+      },
+      {
+        "away": "Hearts",
+        "home": "St Johnstone",
+        "meetings": 3,
+        "season": "2016/17"
+      },
+      {
+        "away": "St Johnstone",
+        "home": "Dundee",
+        "meetings": 3,
+        "season": "2017/18"
+      },
+      {
+        "away": "Hearts",
+        "home": "Rangers",
+        "meetings": 3,
+        "season": "2017/18"
+      },
+      {
+        "away": "Kilmarnock",
+        "home": "Rangers",
+        "meetings": 3,
+        "season": "2017/18"
+      },
+      {
+        "away": "Partick",
+        "home": "St Johnstone",
+        "meetings": 3,
+        "season": "2017/18"
+      },
+      {
+        "away": "Ross County",
+        "home": "St Johnstone",
+        "meetings": 3,
+        "season": "2017/18"
+      },
+      {
+        "away": "St Johnstone",
+        "home": "Hamilton",
+        "meetings": 3,
+        "season": "2018/19"
+      },
+      {
+        "away": "Aberdeen",
+        "home": "Hibernian",
+        "meetings": 3,
+        "season": "2018/19"
+      },
+      {
+        "away": "Dundee",
+        "home": "Livingston",
+        "meetings": 3,
+        "season": "2018/19"
+      },
+      {
+        "away": "Livingston",
+        "home": "Motherwell",
+        "meetings": 3,
+        "season": "2018/19"
+      },
+      {
+        "away": "Dundee",
+        "home": "St Johnstone",
+        "meetings": 3,
+        "season": "2018/19"
+      },
+      {
+        "away": "Livingston",
+        "home": "Celtic",
+        "meetings": 3,
+        "season": "2020/21"
+      },
+      {
+        "away": "Dundee United",
+        "home": "Hamilton",
+        "meetings": 3,
+        "season": "2020/21"
+      },
+      {
+        "away": "Dundee United",
+        "home": "Kilmarnock",
+        "meetings": 3,
+        "season": "2020/21"
+      },
+      {
+        "away": "Rangers",
+        "home": "Livingston",
+        "meetings": 3,
+        "season": "2020/21"
+      },
+      {
+        "away": "Aberdeen",
+        "home": "St Johnstone",
+        "meetings": 3,
+        "season": "2020/21"
+      },
+      {
+        "away": "Hibernian",
+        "home": "Dundee",
+        "meetings": 3,
+        "season": "2021/22"
+      },
+      {
+        "away": "Hearts",
+        "home": "Dundee United",
+        "meetings": 3,
+        "season": "2021/22"
+      },
+      {
+        "away": "Motherwell",
+        "home": "Dundee United",
+        "meetings": 3,
+        "season": "2021/22"
+      },
+      {
+        "away": "St Johnstone",
+        "home": "Hibernian",
+        "meetings": 3,
+        "season": "2021/22"
+      },
+      {
+        "away": "St Mirren",
+        "home": "Aberdeen",
+        "meetings": 3,
+        "season": "2022/23"
+      },
+      {
+        "away": "Aberdeen",
+        "home": "Celtic",
+        "meetings": 3,
+        "season": "2022/23"
+      },
+      {
+        "away": "Rangers",
+        "home": "Hibernian",
+        "meetings": 3,
+        "season": "2022/23"
+      },
+      {
+        "away": "St Johnstone",
+        "home": "Kilmarnock",
+        "meetings": 3,
+        "season": "2022/23"
+      },
+      {
+        "away": "Dundee United",
+        "home": "Motherwell",
+        "meetings": 3,
+        "season": "2022/23"
+      },
+      {
+        "away": "St Johnstone",
+        "home": "Aberdeen",
+        "meetings": 3,
+        "season": "2023/24"
+      },
+      {
+        "away": "St Mirren",
+        "home": "Celtic",
+        "meetings": 3,
+        "season": "2023/24"
+      },
+      {
+        "away": "Kilmarnock",
+        "home": "Dundee",
+        "meetings": 3,
+        "season": "2023/24"
+      },
+      {
+        "away": "Hearts",
+        "home": "St Mirren",
+        "meetings": 3,
+        "season": "2023/24"
+      },
+      {
+        "away": "Rangers",
+        "home": "St Mirren",
+        "meetings": 3,
+        "season": "2023/24"
+      },
+      {
+        "away": "Ross County",
+        "home": "St Johnstone",
+        "meetings": 3,
+        "season": "2024/25"
+      },
+      {
+        "away": "Hibernian",
+        "home": "St Mirren",
+        "meetings": 3,
+        "season": "2024/25"
+      },
+      {
+        "away": "Falkirk",
+        "home": "Celtic",
+        "meetings": 3,
+        "season": "2025/26"
+      },
+      {
+        "away": "Livingston",
+        "home": "Dundee",
+        "meetings": 3,
+        "season": "2025/26"
+      },
+      {
+        "away": "Livingston",
+        "home": "Dundee United",
+        "meetings": 3,
+        "season": "2025/26"
+      },
+      {
+        "away": "Hibernian",
+        "home": "Falkirk",
+        "meetings": 3,
+        "season": "2025/26"
+      },
+      {
+        "away": "Rangers",
+        "home": "Falkirk",
+        "meetings": 3,
+        "season": "2025/26"
+      },
+      {
+        "away": "Falkirk",
+        "home": "Hearts",
+        "meetings": 3,
+        "season": "2025/26"
+      },
+      {
+        "away": "Dundee",
+        "home": "Kilmarnock",
+        "meetings": 3,
+        "season": "2025/26"
+      }
+    ]
+  },
+  "fixture_coverage": [
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 240,
+      "results": 240,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 240,
+      "results": 240,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 240,
+      "results": 240,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 232,
+      "results": 232,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 312,
+      "results": 312,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 312,
+      "results": 312,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 311,
+      "results": 311,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition B1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 80,
+      "results": 80,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition D1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 63,
+      "results": 63,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2015/16",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 1,
+      "matches": 381,
+      "results": 380,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E0",
+      "country": null,
+      "future_fixtures": 280,
+      "matches": 360,
+      "results": 80,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 552,
+      "results": 552,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition E1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 144,
+      "results": 144,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 279,
+      "results": 279,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition F1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 72,
+      "results": 72,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition I1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 90,
+      "results": 90,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 232,
+      "results": 232,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition N1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 90,
+      "results": 90,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition P1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 81,
+      "results": 81,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 179,
+      "results": 179,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 228,
+      "results": 228,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SC0",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 66,
+      "results": 66,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition SP1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 99,
+      "results": 99,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2016/17",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2017/18",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2018/19",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2019/20",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 420,
+      "results": 420,
+      "season": "2020/21",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2021/22",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 342,
+      "results": 342,
+      "season": "2022/23",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 380,
+      "results": 380,
+      "season": "2023/24",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 342,
+      "results": 342,
+      "season": "2024/25",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 306,
+      "results": 306,
+      "season": "2025/26",
+      "stale_scheduled": 0
+    },
+    {
+      "competition": "football_data competition T1",
+      "country": null,
+      "future_fixtures": 0,
+      "matches": 81,
+      "results": 81,
+      "season": "2026/27",
+      "stale_scheduled": 0
+    }
+  ],
+  "gaps": [
+    "1 match(es) with no provider identifier: [4280]"
+  ],
+  "home_away": {
+    "imbalanced_clubs": [],
+    "insertions_checked": 2274
+  },
+  "integrity": {
+    "completed_without_score": 0,
+    "match_without_provider_identifier": 1,
+    "matches_without_provider_identifier_ids": [
+      4280
+    ],
+    "missing_kickoff": 0,
+    "negative_score": 0,
+    "non_completed_with_score": 0,
+    "same_team_both_sides": 0,
+    "season_without_matches": 0,
+    "status_distribution": [
+      {
+        "rows": 39259,
+        "status": "completed"
+      },
+      {
+        "rows": 281,
+        "status": "scheduled"
+      }
+    ],
+    "team_without_matches": 4,
+    "unknown_status_values": [],
+    "unrealistic_score": 0
+  },
+  "kickoffs": {
+    "implausible_year": [],
+    "midnight_kickoffs_by_season": [],
+    "outside_season_window": []
+  },
+  "latest_match_update": "2026-11-01 10:02:08.04839",
+  "partial_seasons": [],
+  "provenance": {
+    "identifiers_by_provider": [
+      {
+        "matches": 380,
+        "provider": "api_football"
+      },
+      {
+        "matches": 285,
+        "provider": "espn"
+      },
+      {
+        "matches": 39259,
+        "provider": "football_data"
+      }
+    ],
+    "matches_with_multiple_providers": [
+      {
+        "id": 1918,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1919,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1920,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1921,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1922,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1923,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1924,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1925,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1926,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1927,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1928,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1929,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1930,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1931,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1932,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1933,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1934,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1935,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1936,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1937,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1938,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1939,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1940,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1941,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1942,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1943,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1944,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1945,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1946,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1947,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1948,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1949,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1950,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1951,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1952,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1953,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1954,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1955,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1956,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1957,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1958,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1959,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1960,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1961,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1962,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1963,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1964,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1965,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1966,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1967,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1968,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1969,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1970,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1971,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1972,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1973,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1974,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1975,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1976,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1977,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1978,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1979,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1980,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1981,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1982,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1983,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1984,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1985,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1986,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1987,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1988,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1989,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1990,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1991,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1992,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1993,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1994,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1995,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1996,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1997,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1998,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 1999,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2000,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2001,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2002,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2003,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2004,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2005,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2006,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2007,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2008,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2009,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2010,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2011,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2012,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2013,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2014,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2015,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2016,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2017,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2018,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2019,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2020,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2021,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2022,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2023,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2024,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2025,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2026,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2027,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2028,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2029,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2030,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2031,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2032,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2033,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2034,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2035,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2036,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2037,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2038,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2039,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2040,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2041,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2042,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2043,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2044,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2045,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2046,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2047,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2048,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2049,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2050,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2051,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2052,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2053,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2054,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2055,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2056,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2057,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2058,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2059,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2060,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2061,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2062,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2063,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2064,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2065,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2066,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2067,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2068,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2069,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2070,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2071,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2072,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2073,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2074,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2075,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2076,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2077,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2078,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2079,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2080,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2081,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2082,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2083,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2084,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2085,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2086,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2087,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2088,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2089,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2090,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2091,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2092,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2093,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2094,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2095,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2096,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2097,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2098,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2099,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2100,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2101,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2102,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2103,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2104,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2105,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2106,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2107,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2108,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2109,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2110,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2111,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2112,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2113,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2114,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2115,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2116,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2117,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2118,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2119,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2120,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2121,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2122,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2123,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2124,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2125,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2126,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2127,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2128,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2129,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2130,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2131,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2132,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2133,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2134,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2135,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2136,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2137,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2138,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2139,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2140,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2141,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2142,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2143,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2144,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2145,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2146,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2147,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2148,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2149,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2150,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2151,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2152,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2153,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2154,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2155,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2156,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2157,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2158,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2159,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2160,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2161,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2162,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2163,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2164,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2165,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2166,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2167,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2168,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2169,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2170,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2171,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2172,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2173,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2174,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2175,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2176,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2177,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2178,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2179,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2180,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2181,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2182,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2183,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2184,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2185,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2186,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2187,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2188,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2189,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2190,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2191,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2192,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2193,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2194,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2195,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2196,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2197,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2198,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2199,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2200,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2201,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2202,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2203,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2204,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2205,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2206,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2207,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2208,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2209,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2210,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2211,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2212,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2213,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2214,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2215,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2216,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2217,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2218,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2219,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2220,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2221,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2222,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2223,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2224,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2225,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2226,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2227,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2228,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2229,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2230,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2231,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2232,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2233,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2234,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2235,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2236,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2237,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2238,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2239,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2240,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2241,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2242,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2243,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2244,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2245,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2246,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2247,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2248,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2249,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2250,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2251,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2252,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2253,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2254,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2255,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2256,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2257,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2258,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2259,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2260,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2261,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2262,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2263,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2264,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2265,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2266,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2267,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2268,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2269,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2270,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2271,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2272,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2273,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2274,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2275,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2276,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2277,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2278,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2279,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2280,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2281,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2282,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2283,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2284,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2285,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2286,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2287,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2288,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2289,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2290,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2291,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2292,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2293,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2294,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2295,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2296,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2297,
+        "providers": [
+          "api_football",
+          "football_data"
+        ],
+        "season": "2024/25"
+      },
+      {
+        "id": 2753,
+        "providers": [
+          "espn",
+          "football_data"
+        ],
+        "season": "2026/27"
+      },
+      {
+        "id": 2754,
+        "providers": [
+          "espn",
+          "football_data"
+        ],
+        "season": "2026/27"
+      },
+      {
+        "id": 2755,
+        "providers": [
+          "espn",
+          "football_data"
+        ],
+        "season": "2026/27"
+      },
+      {
+        "id": 2756,
+        "providers": [
+          "espn",
+          "football_data"
+        ],
+        "season": "2026/27"
+      },
+      {
+        "id": 2757,
+        "providers": [
+          "espn",
+          "football_data"
+        ],
+        "season": "2026/27"
+      }
+    ],
+    "matches_with_multiple_providers_count": 385
+  },
+  "status_totals": {
+    "completed": 39259,
+    "scheduled": 281
+  },
+  "totals": {
+    "competitions": 11,
+    "completed": 755850,
+    "matches": 761750,
+    "scheduled": 5900,
+    "seasons": 122
+  }
+}

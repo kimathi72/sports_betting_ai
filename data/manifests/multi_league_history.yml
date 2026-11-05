@@ -1,0 +1,94 @@
+# Multi-competition European football manifest — COMPLETED seasons only.
+#
+# Scope: 2024/25 and 2025/26 for nine European leagues besides the Premier
+# League (which has its own manifest, premier_league_history.yml). 2025/26 is
+# complete as of 2026-11-01, so these rows are final results and this file is the
+# reproducible multi-competition backfill.
+#
+# WHY THESE DIVISIONS: every code below was verified against the live source
+# (HTTP 200 plus a football-data.co.uk CSV body) before being listed. E1 is the
+# English Championship, SP1 La Liga, D1 the Bundesliga, I1 Serie A, F1 Ligue 1,
+# N1 the Eredivisie, B1 the Belgian Pro League, P1 the Primeira Liga, T1 the
+# Super Lig and SC0 the Scottish Premiership.
+#
+# WHAT IS DELIBERATELY MISSING: competitions the chosen providers cannot serve
+# reliably. ESPN has no usable historical archive for the UEFA competitions
+# (verified: the away-and-home legs of past seasons are not returned by the
+# scoreboard endpoint), and ESPN's Premier League archive is thin for seasons
+# older than the current one, so those seasons are not backfilled from ESPN.
+# See docs/data-providers.md for the coverage matrix and the evidence.
+#
+# Download first (the `web` container mounts data/raw read-write):
+#
+#   for d in E1 SP1 D1 I1 F1 N1 B1 P1 T1 SC0; do
+#     docker compose exec -T web bundle exec rake "import:download[2024/25,2025/26]" DIVISION=$d
+#   done
+#
+# Then import (each file names its own season; the second rake argument is only
+# the run label shown in the output):
+#
+#   docker compose exec -T web \
+#     bundle exec rake "import:historical[/data/manifests/multi_league_history.yml,2024/25]"
+#
+# Re-running is safe: unchanged fixtures are skipped and duplicate matches are
+# never created (the importer is idempotent per competition+season).
+- path: /data/raw/2425_E1.csv
+  season: "2024/25"
+  competition: E1
+- path: /data/raw/2526_E1.csv
+  season: "2025/26"
+  competition: E1
+- path: /data/raw/2425_SP1.csv
+  season: "2024/25"
+  competition: SP1
+- path: /data/raw/2526_SP1.csv
+  season: "2025/26"
+  competition: SP1
+- path: /data/raw/2425_D1.csv
+  season: "2024/25"
+  competition: D1
+- path: /data/raw/2526_D1.csv
+  season: "2025/26"
+  competition: D1
+- path: /data/raw/2425_I1.csv
+  season: "2024/25"
+  competition: I1
+- path: /data/raw/2526_I1.csv
+  season: "2025/26"
+  competition: I1
+- path: /data/raw/2425_F1.csv
+  season: "2024/25"
+  competition: F1
+- path: /data/raw/2526_F1.csv
+  season: "2025/26"
+  competition: F1
+- path: /data/raw/2425_N1.csv
+  season: "2024/25"
+  competition: N1
+- path: /data/raw/2526_N1.csv
+  season: "2025/26"
+  competition: N1
+- path: /data/raw/2425_B1.csv
+  season: "2024/25"
+  competition: B1
+- path: /data/raw/2526_B1.csv
+  season: "2025/26"
+  competition: B1
+- path: /data/raw/2425_P1.csv
+  season: "2024/25"
+  competition: P1
+- path: /data/raw/2526_P1.csv
+  season: "2025/26"
+  competition: P1
+- path: /data/raw/2425_T1.csv
+  season: "2024/25"
+  competition: T1
+- path: /data/raw/2526_T1.csv
+  season: "2025/26"
+  competition: T1
+- path: /data/raw/2425_SC0.csv
+  season: "2024/25"
+  competition: SC0
+- path: /data/raw/2526_SC0.csv
+  season: "2025/26"
+  competition: SC0

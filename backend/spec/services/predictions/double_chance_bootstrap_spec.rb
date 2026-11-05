@@ -20,10 +20,10 @@ RSpec.describe Predictions::MarketPredictor, 'double chance without a stored 1x2
 
   let(:fixture_match) do
     Match.create!(competition: competition, season: season, home_team: home, away_team: away,
-                  kickoff_at: Time.utc(2026, 8, 20, 15, 0), status: 'scheduled')
+                  kickoff_at: 3.days.from_now, status: 'scheduled')
   end
 
-  def stub_ml(probabilities:, status: 200)
+  def stub_ml(probabilities:, status: 200, market: 'double_chance')
     http = instance_double(Net::HTTP)
     allow(http).to receive(:open_timeout=)
     allow(http).to receive(:read_timeout=)
@@ -33,8 +33,8 @@ RSpec.describe Predictions::MarketPredictor, 'double chance without a stored 1x2
     requested = []
     allow(http).to receive(:request) do |request|
       requested << request.uri.to_s
-      body = { probabilities: probabilities, model_version: 'v-dc',
-               predicted_at: '2026-08-19T10:00:00Z' }
+      body = { market: market, probabilities: probabilities, model_version: 'v-dc',
+               predicted_at: '2026-08-19T10:00:00Z', feature_version: 'v2' }
       instance_double(Net::HTTPResponse, code: status.to_s, body: JSON.generate(body))
     end
     allow(Net::HTTP).to receive(:new).and_return(http)
@@ -43,54 +43,44 @@ RSpec.describe Predictions::MarketPredictor, 'double chance without a stored 1x2
 
   let(:predictor) { described_class.new(service_url: 'http://ml:8000') }
 
-  it 'fetches 1x2 when the match has no stored 1x2 prediction' do
-    requested = stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 })
-
+  it 'asks the service to derive double chance rather than commissioning a 1x2' do
+    # CONTRACT CHANGE (deliberate, documented). Rails used to fetch a 1x2 and
+    # project it itself, which meant P(1X) was computed in Ruby as well as in
+    # Python. The projection now lives only in the service: one implementation,
+    # so the two sides can never disagree about a double chance price.
+    requested = stub_ml(probabilities: { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 })
     result = predictor.call(fixture_match, market: 'double_chance')
-
     expect(result).to be_success
-    expect(requested).to eq(['http://ml:8000/predict/1x2'])
+    expect(requested).to eq(['http://ml:8000/predict/from-history/double_chance'])
   end
 
-  it 'stores the derived double chance with the projections of the 1x2 model' do
-    stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 })
-
+  it 'stores the distribution the service projected' do
+    stub_ml(probabilities: { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 })
     predictor.call(fixture_match, market: 'double_chance')
-
     double_chance = Prediction.find_by(match: fixture_match, market: 'double_chance')
     expect(double_chance.outcomes).to include('1x' => 0.8, 'x2' => 0.5, '12' => 0.7)
     expect(double_chance.model_version).to eq('v-dc')
   end
 
-  it 'stores exactly one 1x2 prediction, not one per request' do
-    stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 })
-
+  it 'stores one live double chance per match, not one per request' do
+    stub_ml(probabilities: { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 })
     predictor.call(fixture_match, market: 'double_chance')
     predictor.call(fixture_match, market: 'double_chance')
-
-    expect(Prediction.where(match: fixture_match, market: '1x2').count).to eq(1)
+    expect(Prediction.current.where(match: fixture_match, market: 'double_chance').count).to eq(1)
   end
 
-  it 'does not call the ML service again when 1x2 is already stored' do
-    stub_ml(probabilities: { 'H' => 0.6, 'D' => 0.25, 'A' => 0.15 })
-    predictor.call(fixture_match, market: '1x2')
-
-    requested = stub_ml(probabilities: { 'H' => 0.9, 'D' => 0.05, 'A' => 0.05 })
+  it 'does not require a 1x2 to be commissioned first' do
+    stub_ml(probabilities: { '1X' => 0.85, 'X2' => 0.4, '12' => 0.75 })
     result = predictor.call(fixture_match, market: 'double_chance')
-
     expect(result).to be_success
-    expect(requested).to be_empty, 'the stored 1x2 must be reused, not re-fetched'
-    expect(Prediction.find_by(match: fixture_match, market: 'double_chance').outcomes)
-      .to include('1x' => 0.85, 'x2' => 0.4, '12' => 0.75)
+    expect(Prediction.where(match: fixture_match, market: '1x2')).to be_empty
   end
 
-  it 'reports the 1x2 failure rather than inventing a distribution' do
+  it 'reports the service failure rather than inventing a distribution' do
     stub_ml(probabilities: { 'H' => 0.5 }, status: 503)
-
     result = predictor.call(fixture_match, market: 'double_chance')
-
     expect(result).not_to be_success
-    expect(result.transient?).to be(true), 'an ML outage is retryable, not a permanent failure'
+    expect(result.transient?).to be(false), 'a missing model is not an outage; retrying will not help'
     expect(Prediction.where(match: fixture_match, market: 'double_chance')).to be_empty
   end
 

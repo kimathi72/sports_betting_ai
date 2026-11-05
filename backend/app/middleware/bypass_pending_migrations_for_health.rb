@@ -14,7 +14,20 @@
 # layer answers it; the action itself performs the database check and returns
 # 200 or 503 as documented.
 #
-# Every other request is passed through untouched.
+# Every other request is passed through untouched — deliberately.
+#
+#   PENDING MIGRATIONS ARE STILL A 500 ON EVERY API PATH.
+#
+# On 2026-11-03 the two Phase C2 migrations were left unapplied in development
+# (handout §18.8) and every `/api/v1/*` request raised PendingMigrationError.
+# That is the correct behaviour: the code expects columns the schema does not
+# have, and answering 200 from a stale schema would turn a loud failure into a
+# quiet wrong answer. Widening this class to swallow the check would hide the
+# only signal that says "run db:migrate".
+#
+# `spec/middleware/check_pending_visibility_spec.rb` pins that boundary: if a
+# future change adds a path here, the spec fails and the decision has to be
+# argued rather than slipped in.
 class BypassPendingMigrationsForHealth
   HEALTH_PATHS = {
     "/api/v1/health" => :liveness,

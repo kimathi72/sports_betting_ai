@@ -17,26 +17,34 @@ RSpec.describe 'POST /api/v1/predictions', type: :request do
   let(:away) { Team.create!(name: 'Chelsea') }
 
   let(:fixture_match) do
+    # A FUTURE kickoff. The producer refuses a fixture whose kickoff has passed
+    # (a stale `scheduled` row is not predictable either), so a hard-coded date
+    # would quietly turn these specs into tests of the refusal.
     Match.create!(competition: competition, season: season, home_team: home, away_team: away,
-                  kickoff_at: Time.utc(2026, 8, 20, 15, 0), status: 'scheduled')
+                  kickoff_at: 2.days.from_now, status: 'scheduled')
   end
 
   def body
     JSON.parse(response.body)
   end
 
+  # Answers with ``probabilities`` for the requested market and reports that
+  # market's name back. Reporting it lets the predictor prove the service answered
+  # the market that was asked for, so a stub cannot quietly cover for a routing bug.
   def stub_ml(probabilities:, status: 200)
     http = instance_double(Net::HTTP)
     allow(http).to receive(:open_timeout=)
     allow(http).to receive(:read_timeout=)
     allow(http).to receive(:use_ssl=)
     allow(http).to receive(:start).and_yield(http)
-    allow(http).to receive(:request).and_return(
+    allow(http).to receive(:request) do |request|
+      market = request.path.split('/').last
       instance_double(Net::HTTPResponse, code: status.to_s,
                                          body: JSON.generate(probabilities: probabilities,
+                                                             market: market,
                                                              model_version: 'v0.3.0',
                                                              predicted_at: '2026-08-19T10:00:00Z'))
-    )
+    end
     allow(Net::HTTP).to receive(:new).and_return(http)
   end
 
@@ -70,7 +78,24 @@ RSpec.describe 'POST /api/v1/predictions', type: :request do
 
   describe 'several markets in one request' do
     before do
-      stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 })
+      # Each market has its OWN distribution: 1x2 is three-way, double chance is the
+      # projection. A single three-outcome stub cannot answer both, and a service
+      # that returned the 1X2 body for a double chance request would be a bug these
+      # examples must catch rather than hide.
+      allow(Net::HTTP).to receive(:new) do
+        http = instance_double(Net::HTTP)
+        allow(http).to receive(:open_timeout=); allow(http).to receive(:read_timeout=)
+        allow(http).to receive(:use_ssl=); allow(http).to receive(:start).and_yield(http)
+        allow(http).to receive(:request) do |request|
+          market = request.path.split('/').last
+          payload = market == 'double_chance' ? { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 } : { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 }
+          instance_double(Net::HTTPResponse, code: '200',
+                                             body: JSON.generate(probabilities: payload, market: market,
+                                                                 model_version: 'v0.3.0',
+                                                                 predicted_at: '2026-08-19T10:00:00Z'))
+        end
+        http
+      end
     end
 
     it 'creates one prediction per requested market' do
@@ -81,7 +106,7 @@ RSpec.describe 'POST /api/v1/predictions', type: :request do
       expect(body['predictions'].map { |p| p['market'] }).to contain_exactly('1x2', 'double_chance')
     end
 
-    it 'derives double chance from the 1x2 it just stored' do
+    it 'returns the derived double chance the service projected' do
       post '/api/v1/predictions',
            params: { match_id: fixture_match.id, markets: %w[1x2 double_chance] }, as: :json
 
@@ -98,7 +123,7 @@ RSpec.describe 'POST /api/v1/predictions', type: :request do
         allow(http).to receive(:open_timeout=); allow(http).to receive(:read_timeout=)
         allow(http).to receive(:use_ssl=); allow(http).to receive(:start).and_yield(http)
         allow(http).to receive(:request) do |request|
-          raise Errno::ECONNREFUSED if request.path.include?('/predict/btts')
+          raise Errno::ECONNREFUSED if request.path.include?('/btts')
 
           instance_double(Net::HTTPResponse, code: '200',
                                              body: JSON.generate(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 },
@@ -135,7 +160,7 @@ RSpec.describe 'POST /api/v1/predictions', type: :request do
 
     it 'returns 400 for an unsupported market' do
       post '/api/v1/predictions',
-           params: { match_id: fixture_match.id, markets: ['correct_score'] }, as: :json
+           params: { match_id: fixture_match.id, markets: ['teleportation'] }, as: :json
 
       expect(response).to have_http_status(:bad_request)
       expect(body['error']).to match(/market/i)

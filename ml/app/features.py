@@ -146,7 +146,12 @@ def _team_results(
                 "lost": float(1.0 if team_score < opp_score else 0.0),
             }
         )
-    results.sort(key=lambda r: r["kickoff_at"], reverse=True)
+    # History arrives oldest-first, so reversing it is newest-first. Sorting on the
+    # timestamp gave the same answer but called ``_utc`` on every row, which turned
+    # feature computation over a full history into the slowest step of the
+    # pipeline; the ordering of the input is already part of this module's
+    # contract (see ``compute_match_features``).
+    results.reverse()
     return results
 
 
@@ -168,11 +173,20 @@ def compute_match_features(match: dict, history: list[dict]) -> dict[str, float]
         raise FeatureError("away_team_id is required to compute features")
 
     past: list[dict] = []
-    for m in sorted(
-        history or [],
-        key=lambda m: (_utc(m.get("kickoff_at")), m.get("id") or 0),
-        reverse=True,
-    ):
+    # One pass, newest-first, stopping at the first row that is not strictly
+    # earlier. The input is documented as oldest-first, so walking it backwards
+    # gives the same newest-first ``past`` list as sorting the whole history while
+    # avoiding an O(n log n) sort per fixture (40k fixtures x a growing history was
+    # hours of pure sorting). The sort is kept for a caller that ignores the
+    # oldest-first contract only when the input is obviously unordered — which is
+    # detected once, from the first and last kickoff, not per row.
+    source = list(history or [])
+    if len(source) > 1:
+        first = _utc(source[0].get("kickoff_at"))
+        last = _utc(source[-1].get("kickoff_at"))
+        if last < first:
+            source.sort(key=lambda m: (_utc(m.get("kickoff_at")), m.get("id") or 0))
+    for m in reversed(source):
         m_kickoff = _utc(m.get("kickoff_at"))
         if m_kickoff >= kickoff:
             continue
@@ -181,7 +195,8 @@ def compute_match_features(match: dict, history: list[dict]) -> dict[str, float]
         if m.get("home_score") is None or m.get("away_score") is None:
             continue
         past.append(m)
-    # past is now newest-first
+    # past is now newest-first. Rows at or after this kickoff are excluded above, so
+    # no downstream step needs to re-check the cutoff.
 
     home_results = _team_results(home_id, past)[:HOME_WINDOW]
     away_results = _team_results(away_id, past)[:AWAY_WINDOW]
@@ -200,16 +215,16 @@ def compute_match_features(match: dict, history: list[dict]) -> dict[str, float]
     away_drawn = sum(r["draw"] for r in away_results)
     away_lost = sum(r["lost"] for r in away_results)
 
-    # Head-to-head: meetings between the two teams before this kickoff, most recent first.
-    h2h: list[dict] = []
-    for m in past:
-        if m.get("home_team_id") not in (home_id, away_id):
-            continue
-        if m.get("away_team_id") not in (home_id, away_id):
-            continue
-        h2h.append(m)
-    h2h.sort(key=lambda m: (_utc(m.get("kickoff_at")), m.get("id") or 0), reverse=True)
-    h2h_recent = [m for m in h2h if _utc(m["kickoff_at"]) < kickoff][:H2H_WINDOW]
+    # Head-to-head: meetings between the two teams before this kickoff. ``past`` is
+    # already chronological (newest first) and already excludes any row at or after
+    # this kickoff, so no second filter or sort is needed — that second pass was
+    # costing an ``_utc`` parse per row per fixture on a 40k-match dataset.
+    h2h_recent = [
+        m
+        for m in past
+        if m.get("home_team_id") in (home_id, away_id)
+        and m.get("away_team_id") in (home_id, away_id)
+    ][:H2H_WINDOW]
 
     h2h_home_wins = 0.0
     h2h_draws = 0.0

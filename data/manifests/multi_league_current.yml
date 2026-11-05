@@ -1,0 +1,39 @@
+# Multi-competition CURRENT (in-progress) season manifest — 2026/27.
+#
+# Split from multi_league_history.yml for the same reason the Premier League is:
+# the in-progress season moves every week, so a completed-history backfill must
+# not depend on it. Every file listed here was downloaded on 2026-11-01 and
+# contains only published results (no future fixtures: the source does not
+# publish them), which the importer stores as `completed`.
+#
+# Re-run any time: unchanged matches are skipped and no duplicates are created.
+- path: /data/raw/2627_E1.csv
+  season: "2026/27"
+  competition: E1
+- path: /data/raw/2627_SP1.csv
+  season: "2026/27"
+  competition: SP1
+- path: /data/raw/2627_D1.csv
+  season: "2026/27"
+  competition: D1
+- path: /data/raw/2627_I1.csv
+  season: "2026/27"
+  competition: I1
+- path: /data/raw/2627_F1.csv
+  season: "2026/27"
+  competition: F1
+- path: /data/raw/2627_N1.csv
+  season: "2026/27"
+  competition: N1
+- path: /data/raw/2627_B1.csv
+  season: "2026/27"
+  competition: B1
+- path: /data/raw/2627_P1.csv
+  season: "2026/27"
+  competition: P1
+- path: /data/raw/2627_T1.csv
+  season: "2026/27"
+  competition: T1
+- path: /data/raw/2627_SC0.csv
+  season: "2026/27"
+  competition: SC0

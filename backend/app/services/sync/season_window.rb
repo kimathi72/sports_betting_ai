@@ -43,6 +43,42 @@ module Sync
       "#{start}/#{format('%02d', finish % 100)}"
     end
 
+    # Calendar bounds of a season, used to clip provider discovery windows.
+    #
+    # Discovery walks a date range and hands every row to a season it was told,
+    # so without a boundary a range that reaches into the next season files those
+    # fixtures under the current one. The live database contains exactly that
+    # defect (season 2025/26, one scheduled fixture on 2026-12-26).
+    def start_of_season(label)
+      Date.new(start_year(label), SEASON_START_MONTH, 1)
+    end
+
+    # The day before the next season begins, so the two ranges never overlap.
+    def end_of_season(label)
+      start_of_season(next_label(label)) - 1
+    end
+
+    # The part of `from..to` that belongs to `label`, or nil when none of it does.
+    def clip_to_season(label, from:, to:)
+      start = [from, start_of_season(label)].max
+      finish = [to, end_of_season(label)].min
+      return nil if finish < start
+
+      start..finish
+    end
+
+    def start_year(label)
+      match = label.to_s.strip.match(%r{\A(\d{4})/(\d{2,4})\z})
+      raise ArgumentError, "unrecognised season label #{label.inspect}" unless match
+
+      match[1].to_i
+    end
+
+    def next_label(label)
+      year = start_year(label)
+      "#{year + 1}/#{format('%02d', (year + 2) % 100)}"
+    end
+
     def code_for(label)
       match = label.to_s.strip.match(%r{\A(\d{4})/(\d{2}|\d{4})\z})
       raise ArgumentError, "unrecognised season label #{label.inspect}" unless match

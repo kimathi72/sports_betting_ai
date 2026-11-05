@@ -57,6 +57,8 @@ def test_health_endpoint() -> None:
 def test_ready_endpoint_no_model(monkeypatch: pytest.MonkeyPatch) -> None:
     import ml.app.main as main
     monkeypatch.setattr(main, "MODEL_PATH", "/nonexistent/model.joblib")
+    # Readiness also covers the goal distribution, which correct score needs.
+    monkeypatch.setattr(main, "GOAL_MODEL_PATH", "/nonexistent/goal.joblib")
     monkeypatch.setattr(main, "_model_caches", {})
     client = TestClient(app)
     resp = client.get("/ready")
@@ -94,7 +96,34 @@ def test_predict_accepts_valid_features(mock_model: Path, monkeypatch: pytest.Mo
     resp = client.post("/predict", json=payload)
     assert resp.status_code == 200
     data = resp.json()
-    assert set(data.keys()) == {"probabilities", "model_version", "predicted_at"}
+    # `market` and `feature_version` were added so a caller can verify WHICH market
+    # answered and which schema produced the vector; the probabilities contract is
+    # unchanged.
+    #
+    # `model_freeze_digest`, `artifact_sha256` and `provenance_status` are the
+    # provenance contract (handout §19). They are additive and always present; the
+    # digest is None unless the loaded artifact matches the freeze record.
+    assert set(data.keys()) == {
+        "market",
+        "probabilities",
+        "model_version",
+        "predicted_at",
+        "feature_version",
+        "model_freeze_digest",
+        "artifact_sha256",
+        "provenance_status",
+    }
+    # Provenance must never be asserted as a constant: in this environment the
+    # artifact may not match a freeze record, so only the status vocabulary is fixed.
+    assert data["provenance_status"] in {
+        "verified",
+        "checksum_mismatch",
+        "not_in_freeze",
+        "no_freeze_record",
+        "artifact_missing",
+        "unavailable",
+    }
+    assert data["market"] == "1x2"
     assert set(data["probabilities"].keys()) == {"H", "D", "A"}
     assert abs(sum(data["probabilities"].values()) - 1.0) < 1e-6
 

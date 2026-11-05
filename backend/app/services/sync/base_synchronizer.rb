@@ -34,6 +34,17 @@ module Sync
       run = Sync::SyncRun.start!(kind: kind, trigger: trigger)
       started = Time.current
 
+      # A subclass may decide the provider provably cannot have published anything
+      # new yet. Returning early still closes the run, so "nothing to do" is
+      # visible in the ledger rather than looking like a run that never happened.
+      # An explicit `seasons:` argument means the caller wants the import anyway.
+      reason = seasons.nil? ? deferral_reason : nil
+      if reason
+        run.finish!(status: 'succeeded', details: { deferred: reason })
+        Rails.logger.info("[sync:#{kind}] deferred: #{reason}")
+        return run
+      end
+
       plan = seasons || seasons_to_sync
       path = download(plan, force: force)
 
@@ -70,6 +81,12 @@ module Sync
     end
 
     private
+
+    # Hook: nil means "run now". The default always runs; a synchronizer overrides
+    # this to skip a provider call that provably cannot return new data.
+    def deferral_reason
+      nil
+    end
 
     # Seasons this deployment synchronizes: the one containing today, plus the
     # previous one for the first weeks of a new season, when late results and

@@ -1,0 +1,184 @@
+{
+  "artifacts": {
+    "model.joblib": {
+      "algorithm": null,
+      "bytes": 2169702,
+      "classes": null,
+      "feature_version": null,
+      "hyperparameters": null,
+      "market": null,
+      "model_version": null,
+      "n_features": null,
+      "rho": null,
+      "rows": null,
+      "selection": null,
+      "sha256": "1f21cab47216540b3101234cc4776d6d774a9e9209b2bab093e658130e3ccc6b",
+      "split": null,
+      "train_range": null,
+      "trained_at": null
+    },
+    "model_1x2.joblib": {
+      "algorithm": "multinomial_logistic_regression",
+      "bytes": 3492,
+      "classes": [
+        "H",
+        "D",
+        "A"
+      ],
+      "feature_version": "v2",
+      "hyperparameters": null,
+      "market": "1x2",
+      "model_version": "1x2-logreg-v2-20261101T120332Z",
+      "n_features": 53,
+      "rho": null,
+      "rows": 33370,
+      "selection": "logistic_regression",
+      "sha256": "99bd1a051b18c2d30ef75c57f693ecce983286784fb9b1f3fa498363f141b5a5",
+      "split": {
+        "test": 5889,
+        "train": 28364,
+        "validation": 5006
+      },
+      "train_range": [
+        "2015-08-08",
+        "2025-02-26"
+      ],
+      "trained_at": "2026-11-01T12:03:32.009438+00:00"
+    },
+    "model_btts.joblib": {
+      "algorithm": "multinomial_logistic_regression",
+      "bytes": 2645,
+      "classes": [
+        "Yes",
+        "No"
+      ],
+      "feature_version": "v2",
+      "hyperparameters": null,
+      "market": "btts",
+      "model_version": "btts-logreg-v2-20261101T120332Z",
+      "n_features": 53,
+      "rho": null,
+      "rows": 33370,
+      "selection": "logistic_regression",
+      "sha256": "d1b0d0d3aba93b2d389a86d27a0a89eae414820f2837db457add9e6c23736296",
+      "split": {
+        "test": 5889,
+        "train": 28364,
+        "validation": 5006
+      },
+      "train_range": [
+        "2015-08-08",
+        "2025-02-26"
+      ],
+      "trained_at": "2026-11-01T12:03:32.009438+00:00"
+    },
+    "model_goal_distribution.joblib": {
+      "algorithm": "dixon_coles",
+      "bytes": 13417,
+      "classes": [
+        "H",
+        "D",
+        "A"
+      ],
+      "feature_version": "v2",
+      "hyperparameters": null,
+      "market": "goals",
+      "model_version": "goal-dc-v2-20261101T120332Z",
+      "n_features": 53,
+      "rho": 0.04,
+      "rows": 33370,
+      "selection": null,
+      "sha256": "41da41cb67e01164feaca535decd02f22e6896296f4bf8ddf2c2008c94d3b399",
+      "split": null,
+      "train_range": null,
+      "trained_at": "2026-11-01T12:03:32.009438+00:00"
+    },
+    "model_over_under_2.5.joblib": {
+      "algorithm": "multinomial_logistic_regression",
+      "bytes": 2685,
+      "classes": [
+        "Over",
+        "Under"
+      ],
+      "feature_version": "v2",
+      "hyperparameters": null,
+      "market": "over_under_2.5",
+      "model_version": "over_under_2.5-logreg-v2-20261101T120332Z",
+      "n_features": 53,
+      "rho": null,
+      "rows": 33370,
+      "selection": "logistic_regression",
+      "sha256": "17f7fe91c8bed6dc2e41745cbdabcee88321bbc4460c64556ece158c1a5a8cae",
+      "split": {
+        "test": 5889,
+        "train": 28364,
+        "validation": 5006
+      },
+      "train_range": [
+        "2015-08-08",
+        "2025-02-26"
+      ],
+      "trained_at": "2026-11-01T12:03:32.009438+00:00"
+    }
+  },
+  "frozen_at": "2026-11-03T12:40:37+00:00",
+  "notes": "Frozen published generation. Produced read-only: no artifact was modified. Verify with app.model_freeze.verify_freeze before relying on any metric attached to this generation.",
+  "protocol_digest": "1415361d762f6b2f0829f8bf0bcaf45cb8ff3d3159ef9c138e3513e91b7cf466",
+  "protocol_version": "v2.1",
+  "published_models": {
+    "artifacts": [
+      {
+        "classes": [
+          "H",
+          "D",
+          "A"
+        ],
+        "market": "1x2",
+        "path": "/app/artifacts/model_1x2.joblib",
+        "rows": 33370,
+        "version": "1x2-logreg-v2-20261101T120332Z"
+      },
+      {
+        "classes": [
+          "Over",
+          "Under"
+        ],
+        "market": "over_under_2.5",
+        "path": "/app/artifacts/model_over_under_2.5.joblib",
+        "rows": 33370,
+        "version": "over_under_2.5-logreg-v2-20261101T120332Z"
+      },
+      {
+        "classes": [
+          "Yes",
+          "No"
+        ],
+        "market": "btts",
+        "path": "/app/artifacts/model_btts.joblib",
+        "rows": 33370,
+        "version": "btts-logreg-v2-20261101T120332Z"
+      },
+      {
+        "market": "goals",
+        "path": "/app/artifacts/model_goal_distribution.joblib",
+        "rho": 0.04,
+        "version": "goal-dc-v2-20261101T120332Z"
+      }
+    ],
+    "feature_version": "v2",
+    "published_at": "2026-11-01T12:03:32.009438+00:00"
+  },
+  "runtime": {
+    "libraries": {
+      "fastapi": "0.162.0",
+      "joblib": "1.6.0",
+      "numpy": "1.26.4",
+      "pydantic": "2.14.2",
+      "scikit-learn": null,
+      "scipy": "1.17.1"
+    },
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "python": "3.12.16"
+  },
+  "schema_version": 1
+}

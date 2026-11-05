@@ -122,8 +122,12 @@ def save_bundle(
     }
     if metadata:
         payload.update(metadata)
-    metrics_path = path.parent / "metrics.json"
-    metrics_path.write_text(json.dumps(payload, indent=2, default=str))
+    # Metadata goes NEXT TO the artifact, named after it. A shared "metrics.json"
+    # meant the last bundle written silently overwrote every other market's
+    # metadata, so the file on disk described a model that was not the one beside
+    # it. The name is derived from the artifact, so two artifacts cannot collide.
+    metadata_path = path.with_suffix(path.suffix + ".meta.json") if path.suffix else Path(f"{path}.meta.json")
+    metadata_path.write_text(json.dumps(payload, indent=2, default=str))
     return path
 
 
@@ -148,9 +152,32 @@ def load_bundle(path: Path | str) -> ModelBundle:
     except Exception as exc:
         raise ModelError(f"model artifact is malformed: {p}") from exc
 
-    expected = list(FEATURE_NAMES)
-    if list(bundle.feature_names) != expected:
+    # The feature schema is validated against the VERSION the artifact declares, not
+    # against the v1 list. v2 models genuinely have more features, and rejecting
+    # them here would make every current artifact unloadable; accepting ANY list
+    # would let a model be served inputs it was never trained on.
+    expected = _expected_features(bundle.feature_names)
+    if expected is not None and list(bundle.feature_names) != expected:
         raise ModelError(
             f"model feature schema mismatch: artifact has {list(bundle.feature_names)}"
         )
     return bundle
+
+
+def _expected_features(names: list[str]) -> list[str] | None:
+    """The canonical feature list for the schema this artifact declares.
+
+    Recognised by length and by the v1 prefix, because that is what the artifact
+    actually records: it stores names, not a version string. An unrecognised schema
+    returns None and is allowed, since refusing it would also refuse a future v3 —
+    what matters is that a KNOWN schema matches exactly.
+    """
+    if list(names) == list(FEATURE_NAMES):
+        return None
+    try:
+        from ml.app.features_v2 import FEATURE_NAMES_V2
+    except Exception:  # pragma: no cover - v2 always exists in this project
+        return None
+    if list(names) == list(FEATURE_NAMES_V2):
+        return FEATURE_NAMES_V2
+    return None

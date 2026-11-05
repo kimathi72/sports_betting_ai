@@ -3,23 +3,29 @@ require 'rails_helper'
 # Market-aware inference: Rails sends canonical match + time-safe history, the ML
 # service computes features and returns a distribution for ONE market.
 #
-# Kilo's contract (verified against ml/app/main.py, read-only):
-#   POST {ML_SERVICE_URL}/predict/{market}
-#   body: { market, <17 flat feature fields> }   -- extra="forbid"
-#   ->    { probabilities: {<outcome>: float}, model_version, predicted_at }
+# ML contract (verified against ml/app/main.py):
+#   POST {ML_SERVICE_URL}/predict/from-history/{market}
+#   body: { match: {...}, history: [ {...}, ... ] }
+#   ->    { market, probabilities: {<outcome>: float}, model_version, predicted_at,
+#           feature_version }
 #
-# FEATURE OWNERSHIP: Python owns the formulas. Rails must not reimplement them, so
-# these specs assert that Rails calls the ML service and persists what it returns
-# — never that Rails computes a probability itself.
+# FEATURE OWNERSHIP: Python owns the formulas. An earlier version of this class
+# posted a flat 17-field vector it had computed in Ruby; that made two
+# implementations of the same maths, which can disagree silently. Rails now sends
+# the fixture and its history, and these specs assert exactly that — Rails calls
+# the ML service and persists what it returns, and never computes a probability.
 RSpec.describe Predictions::MarketPredictor do
   let(:competition) { Competition.create!(name: 'Premier League', code: 'EPL') }
   let(:season) { Season.create!(competition: competition, name: '2026/27') }
   let(:home) { Team.create!(name: 'Arsenal') }
   let(:away) { Team.create!(name: 'Chelsea') }
 
+  # A fixture in the FUTURE. The producer refuses a kickoff that has passed, so a
+  # fixed date would silently turn this whole file into a test of the refusal as
+  # soon as that date went by.
   let(:fixture_match) do
     Match.create!(competition: competition, season: season, home_team: home, away_team: away,
-                  kickoff_at: Time.utc(2026, 8, 20, 15, 0), status: 'scheduled')
+                  kickoff_at: 3.days.from_now, status: 'scheduled')
   end
 
   # Captures what Rails actually sends, and replies with a canned distribution.
@@ -34,8 +40,8 @@ RSpec.describe Predictions::MarketPredictor do
     allow(http).to receive(:request) do |request|
       captured[:uri] = request.uri.to_s
       captured[:body] = JSON.parse(request.body)
-      body = { probabilities: probabilities, model_version: version,
-               predicted_at: '2026-08-19T10:00:00Z' }
+      body = { market: market, probabilities: probabilities, model_version: version,
+               predicted_at: '2026-08-19T10:00:00Z', feature_version: 'v2' }
       instance_double(Net::HTTPResponse, code: status.to_s, body: JSON.generate(body))
     end
 
@@ -53,18 +59,30 @@ RSpec.describe Predictions::MarketPredictor do
 
       predictor.call(fixture_match, market: '1x2')
 
-      expect(captured[:uri]).to eq('http://ml:8000/predict/1x2')
+      expect(captured[:uri]).to eq('http://ml:8000/predict/from-history/1x2')
     end
 
-    it 'sends the 17 feature fields the schema requires' do
+    it 'sends the fixture and its history rather than a locally computed feature vector' do
       captured = stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 }, market: '1x2')
 
       predictor.call(fixture_match, market: '1x2')
 
-      expect(captured[:body].keys).to include(
-        'home_last5_points', 'home_matches_played', 'away_last5_points',
-        'away_matches_played', 'h2h_home_wins', 'h2h_draws', 'h2h_away_wins'
+      expect(captured[:body].keys).to contain_exactly('match', 'history')
+      expect(captured[:body]['match']).to include(
+        'id' => fixture_match.id,
+        'home_team_id' => home.id,
+        'away_team_id' => away.id,
+        'kickoff_at' => fixture_match.kickoff_at.utc.iso8601
       )
+    end
+
+    it 'never sends a 17-field feature vector on any market' do
+      { '1x2' => { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 },
+        'btts' => { 'Yes' => 0.6, 'No' => 0.4 } }.each do |market, probabilities|
+        captured = stub_ml(probabilities: probabilities, market: market)
+        predictor.call(fixture_match, market: market)
+        expect(captured[:body]).not_to include('home_last5_points')
+      end
     end
 
     it 'persists a 1x2 prediction with canonical H/D/A outcomes' do
@@ -119,44 +137,48 @@ RSpec.describe Predictions::MarketPredictor do
   end
 
   describe 'double chance' do
-    it 'derives 1x/x2/12 from the stored 1x2 rather than calling the ML service' do
-      stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 }, market: '1x2')
-      predictor.call(fixture_match, market: '1x2')
-
-      # No HTTP stub for this call: if Rails called the service it would fail.
-      allow(Net::HTTP).to receive(:new).and_raise('must not call ML for double chance')
-
-      result = predictor.call(fixture_match, market: 'double_chance')
-
-      expect(result).to be_success
-      expect(result.prediction.market_outcomes).to eq('1x' => 0.8, 'x2' => 0.5, '12' => 0.7)
-    end
-
-    # CONTRACT CHANGE (documented, deliberate).
-    #
-    # Previously this returned a failure whenever no 1X2 had been stored yet,
-    # which made double chance depend on the caller having requested 1X2 first —
-    # so a client asking for one market saw it as "unsupported". The market now
-    # fetches the 1X2 distribution itself and derives from it. The guarantee that
-    # matters is unchanged: double chance is never trained or fitted, it is the
-    # projection P(H)+P(D), P(D)+P(A), P(H)+P(A) of whatever the 1X2 model said.
-    # See spec/services/predictions/double_chance_bootstrap_spec.rb.
-    it 'derives from a freshly fetched 1x2 when none is stored yet' do
-      stub_ml(probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 }, market: '1x2')
+    it 'asks the service for the derived distribution and stores it' do
+      # Double chance is DERIVED, never fitted: the service is asked for the
+      # projection and Rails stores what it returns. Rails no longer computes
+      # P(1X) itself, so there is one implementation of the formula.
+      captured = stub_ml(probabilities: { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 }, market: 'double_chance')
 
       result = predictor.call(fixture_match, market: 'double_chance')
 
       expect(result).to be_success
+      expect(captured[:uri]).to end_with('/predict/from-history/double_chance')
       expect(result.prediction.market_outcomes).to eq('1x' => 0.8, 'x2' => 0.5, '12' => 0.7)
     end
 
-    it 'fails with a 1x2-related message when the ML service cannot supply 1x2' do
-      stub_ml(probabilities: { 'H' => 0.5 }, market: '1x2', status: 503)
+    it 'does not require a stored 1x2 first' do
+      stub_ml(probabilities: { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 }, market: 'double_chance')
+
+      result = predictor.call(fixture_match, market: 'double_chance')
+
+      expect(result).to be_success
+      expect(Prediction.current.for_market('double_chance').count).to eq(1)
+    end
+
+    it 'fails cleanly when the service has no 1x2 distribution to project' do
+      stub_ml(probabilities: { 'H' => 0.5 }, market: 'double_chance', status: 503)
 
       result = predictor.call(fixture_match, market: 'double_chance')
 
       expect(result).to be_failure
-      expect(result.message).to match(/1x2|unreachable|HTTP 5/i)
+      expect(result.message).to match(/no model is available/i)
+    end
+  end
+
+  describe 'correct score' do
+    it 'stores the truncated scorelines the service ranked' do
+      stub_ml(probabilities: { '2-1' => 0.12, '1-1' => 0.11, '1-0' => 0.10 }, market: 'correct_score')
+
+      result = predictor.call(fixture_match, market: 'correct_score')
+
+      expect(result).to be_success
+      expect(result.prediction.outcomes.keys).to eq(%w[2-1 1-1 1-0])
+      # A truncated view sums to well under 1; that is correct, not a rounding error.
+      expect(result.prediction.outcomes.values.sum).to be < 1.0
     end
   end
 
@@ -168,6 +190,7 @@ RSpec.describe Predictions::MarketPredictor do
       predictor.call(fixture_match, market: 'over_under_2.5')
       stub_ml(probabilities: { 'yes' => 0.6, 'no' => 0.4 }, market: 'btts')
       predictor.call(fixture_match, market: 'btts')
+      stub_ml(probabilities: { '1X' => 0.8, 'X2' => 0.5, '12' => 0.7 }, market: 'double_chance')
       predictor.call(fixture_match, market: 'double_chance')
 
       live = Prediction.current.where(match_id: fixture_match.id)
@@ -234,11 +257,26 @@ RSpec.describe Predictions::MarketPredictor do
       expect(Prediction.count).to eq(0)
     end
 
-    it 'rejects an unknown market before any network call' do
+    it 'rejects a market outside the closed set before any network call' do
       allow(Net::HTTP).to receive(:new)
 
-      expect(predictor.call(fixture_match, market: 'correct_score')).to be_failure
+      expect(predictor.call(fixture_match, market: 'teleportation')).to be_failure
       expect(Net::HTTP).not_to have_received(:new)
+    end
+
+    it 'rejects correct score lines that are not scorelines' do
+      stub_ml(probabilities: { 'lots' => 0.6, 'few' => 0.3 }, market: 'correct_score')
+
+      result = predictor.call(fixture_match, market: 'correct_score')
+
+      expect(result).to be_failure
+      expect(Prediction.count).to eq(0)
+    end
+
+    it 'rejects correct score lines that claim more than certainty' do
+      stub_ml(probabilities: { '2-1' => 0.8, '1-0' => 0.6 }, market: 'correct_score')
+
+      expect(predictor.call(fixture_match, market: 'correct_score')).to be_failure
     end
   end
 
@@ -253,5 +291,95 @@ RSpec.describe Predictions::MarketPredictor do
     it 'reports a missing service URL' do
       expect(described_class.new(service_url: '').call(fixture_match, market: '1x2')).to be_failure
     end
+  end
+end
+
+# Provenance capture for prospective evaluation.
+#
+# The ML service already returns `feature_version`; Rails used to discard it. Without
+# it a prediction cannot be attributed to an identifiable generation, and prospective
+# eligibility must reject it.
+RSpec.describe Predictions::MarketPredictor, 'prospective provenance' do
+  let(:competition) { Competition.create!(name: "Prov League #{SecureRandom.hex(3)}") }
+  let(:season) { Season.create!(competition: competition, name: '2026/27') }
+  let(:home) { Team.create!(name: "Prov Home #{SecureRandom.hex(3)}") }
+  let(:away) { Team.create!(name: "Prov Away #{SecureRandom.hex(3)}") }
+  let!(:fixture_match) do
+    # A future kickoff: the producer refuses a fixture that has already started.
+    Match.create!(competition: competition, season: season, home_team: home, away_team: away,
+                  kickoff_at: 2.days.from_now, status: 'scheduled')
+  end
+
+  # Uses the same Net::HTTP stub style as the rest of this file.
+  def stub_ml_detailed(extra = {})
+    http = instance_double(Net::HTTP)
+    allow(http).to receive(:open_timeout=)
+    allow(http).to receive(:read_timeout=)
+    allow(http).to receive(:use_ssl=)
+    allow(http).to receive(:start).and_yield(http)
+    allow(http).to receive(:request) do
+      body = { market: '1x2', probabilities: { 'H' => 0.5, 'D' => 0.3, 'A' => 0.2 },
+               model_version: 'v2', predicted_at: '2026-11-07T09:00:00Z',
+               feature_version: 'v2' }.merge(extra)
+      instance_double(Net::HTTPResponse, code: '200', body: JSON.generate(body))
+    end
+    allow(Net::HTTP).to receive(:new).and_return(http)
+  end
+
+  def run_predictor
+    described_class.new(service_url: 'http://ml:8000').call(fixture_match, market: '1x2')
+  end
+
+  it 'records the feature version the service reported' do
+    stub_ml_detailed
+    result = run_predictor
+
+    expect(result.prediction.model_metadata['feature_version']).to eq('v2')
+  end
+
+  it 'records the kickoff the fixture had at issue time' do
+    stub_ml_detailed
+    result = run_predictor
+
+    expect(result.prediction.issued_kickoff_at).to eq(fixture_match.kickoff_at)
+  end
+
+  it 'stores the freeze digest when the service supplies one' do
+    stub_ml_detailed(model_freeze_digest: 'feedface' * 8)
+    result = run_predictor
+
+    expect(result.prediction.model_freeze_digest).to eq('feedface' * 8)
+  end
+
+  it 'leaves the digest null when the service does not supply one' do
+    stub_ml_detailed
+    result = run_predictor
+
+    expect(result.prediction.model_freeze_digest).to be_nil
+  end
+
+  it 'passes the digest through unchanged, including its exact value' do
+    # Provenance must not be reformatted, truncated or lower-cased: Rails stores it
+    # verbatim so it can be matched against the freeze record later.
+    stub_ml_detailed(model_freeze_digest: 'AbC123dEf456')
+    result = run_predictor
+
+    expect(result.prediction.model_freeze_digest).to eq('AbC123dEf456')
+    expect(result.prediction.model_metadata['model_freeze_digest']).to eq('AbC123dEf456')
+  end
+
+  it 'leaves the digest missing when the service reports provenance_status unavailable' do
+    stub_ml_detailed(provenance_status: 'unavailable')
+    result = run_predictor
+
+    expect(result.prediction.model_freeze_digest).to be_nil
+  end
+
+  it 'records the digest and feature version for the same response' do
+    stub_ml_detailed(model_freeze_digest: 'deadbeef' * 8, feature_version: 'v2')
+    result = run_predictor
+
+    expect(result.prediction.model_metadata['feature_version']).to eq('v2')
+    expect(result.prediction.model_freeze_digest).to eq('deadbeef' * 8)
   end
 end

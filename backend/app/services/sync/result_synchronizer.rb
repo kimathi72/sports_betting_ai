@@ -15,7 +15,9 @@ module Sync
   #     it is simply not yet published, and stays scheduled,
   #   - treats a CHANGED score for an already completed match as a conflict that
   #     aborts the batch (the importer's long-standing rule), rather than
-  #     silently rewriting history a prediction was made against.
+  #     silently rewriting history a prediction was made against,
+  #   - defers the provider call entirely while the newest pending fixture is
+  #     still inside the publication window (see `deferral_reason`).
   #
   # It deliberately does NOT recompute predictions, retrain models or promote
   # artifacts. New results become training data for the next explicit training
@@ -33,11 +35,38 @@ module Sync
 
     private
 
-    # Skip the provider call entirely when the newest fixture to have finished
-    # is still inside the publication window: the file cannot contain its result
-    # yet, so downloading it is a wasted request against a rate-limited source.
-    def seasons_to_sync
-      super
+    # Skip the provider call entirely when the most recent fixture that should
+    # already have finished is still inside the publication window. Such a fixture
+    # cannot have a result in the file yet, so downloading it would spend a request
+    # against a rate-limited source to learn nothing.
+    #
+    # The check is deliberately conservative: it only defers when there is a
+    # pending fixture whose estimated end is inside the window. If no such fixture
+    # is pending (nothing to wait for), the run proceeds, because there may be
+    # older results still to reconcile or a fixture whose kickoff moved.
+    def deferral_reason
+      delay = self.class.publication_delay
+      return nil if delay.zero?
+
+      pending = Match.where(status: %w[scheduled in_progress])
+                     .where(kickoff_at: ...Time.current)
+                     .order(kickoff_at: :desc)
+                     .first
+      return nil if pending.nil?
+
+      expected_final = pending.kickoff_at + estimated_duration
+      return nil unless Time.current < expected_final + delay
+
+      "latest pending fixture (match #{pending.id}) finished around " \
+        "#{expected_final.utc.iso8601} and results are published after " \
+        "#{delay.inspect}; retry later"
+    end
+
+    # A football match plus stoppage time. A fixed estimate is intentional: the
+    # exact end time is not published for a fixture that has not finished, and the
+    # window is already padded by `publication_delay`.
+    def estimated_duration
+      ENV.fetch('SYNC_MATCH_DURATION_MINUTES', '120').to_i.minutes
     end
   end
 end
